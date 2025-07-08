@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura1 Menu - HTML Controlled</title>
+    <title>Aura2 Menu - HTML Controlled</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -520,7 +520,7 @@
             updateCounter();
             updateHighlightBar();
 
-            // تحديث حالة Lua بالتاب الجديد
+            // *** هذا السطر هو المفتاح لتحديث Lua بالتاب الجديد ***
             updateLuaCurrentState();
         }
 
@@ -625,10 +625,11 @@
             if (item.type === "submenu") {
                 menuHistory.push(currentMenuType); // حفظ القائمة الحالية قبل الانتقال
                 currentMenuType = item.target;
-                renderMenu(currentMenuType);
+                renderMenu(currentMenuType); // هذا يستدعي updateLuaCurrentState
             } else if (item.type === "action") {
                 sendNuiMessage('menuSelected', { action: item.action, name: item.name });
                 showNotification("Action Executed", `${item.name} activated!`, "info");
+                updateLuaCurrentState(); // تحديث الحالة عند اختيار إجراء
             }
         }
 
@@ -642,6 +643,7 @@
                 state: item.state
             });
             showNotification(item.name, `${item.name} ${item.state ? 'Enabled' : 'Disabled'}`, item.state ? "success" : "error");
+            updateLuaCurrentState(); // تحديث الحالة عند تبديل خيار
         }
 
         function goBack() {
@@ -688,7 +690,9 @@
                 currentIndex = (currentIndex + 1) % totalItems;
             } else if (key === "Enter") {
                 const selectedItemElement = getCurrentMenuItem();
-                selectedItemElement.click(); // محاكاة النقر
+                if (selectedItemElement) { // تأكد من وجود العنصر قبل النقر عليه
+                    selectedItemElement.click(); // محاكاة النقر
+                }
             } else if (key === "Backspace") {
                 goBack();
             }
@@ -699,9 +703,11 @@
         menuItemsContainer.addEventListener('mouseover', function(event) {
             const itemElement = event.target.closest('.menu-item, .toggle-item, .back-arrow-item');
             if (itemElement) {
-                const index = parseInt(itemElement.getAttribute('data-index'));
-                if (!isNaN(index) && index !== currentIndex) {
-                    currentIndex = index;
+                // احصل على الفهرس من العنصر مباشرة بدلاً من الاعتماد على الترتيب الحالي للأطفال
+                const clickedIndex = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item')).indexOf(itemElement);
+                
+                if (clickedIndex !== -1 && clickedIndex !== currentIndex) {
+                    currentIndex = clickedIndex;
                     updateSelection();
                 }
             }
@@ -714,8 +720,10 @@
         function showNotification(title, message, type = "info", duration = 4000) {
             const notification = document.createElement('div');
             notification.classList.add('notification');
+            // تغيير لون الحدود بناءً على النوع
             if (type === "success") notification.style.borderColor = "rgba(0, 255, 0, 0.4)";
             if (type === "error") notification.style.borderColor = "rgba(255, 0, 0, 0.4)";
+            if (type === "info") notification.style.borderColor = "rgba(255, 255, 0, 0.4)"; // اللون الافتراضي أو الأصفر
 
             notification.innerHTML = `
                 <div class="notification-content">
@@ -736,6 +744,9 @@
 
             const timerBar = notification.querySelector('.notification-timer');
             timerBar.style.animationDuration = `${duration / 1000}s`;
+            if (type === "success") timerBar.style.backgroundColor = "rgb(0, 255, 0)";
+            if (type === "error") timerBar.style.backgroundColor = "rgb(255, 0, 0)";
+            if (type === "info") timerBar.style.backgroundColor = "rgb(255, 255, 0)";
 
             setTimeout(() => {
                 notification.classList.add('fade-out');
@@ -749,12 +760,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderMenu(currentMenuType); // عرض القائمة الرئيسية عند التحميل
             // أرسل رسالة مبدئية إلى Lua لتعيين الحالة
-            sendNuiMessage('updateCurrentState', { tab: currentMenuType, option: getCurrentMenuItemName() });
+            updateLuaCurrentState();
         });
-
-        // الاستماع لرسالة من Lua لتهيئة القائمة بالتاب الافتراضي عند الفتح
-        // هذا يسمح لـ Lua بتحديد أي تاب يجب عرضه عند الفتح لأول مرة.
-        // (تم نقل جزء معالجة initialTab إلى `window.addEventListener('message')` أعلاه)
     </script>
 </body>
 </html>
