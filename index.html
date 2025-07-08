@@ -141,7 +141,7 @@
         function sendNuiDebugMessage(type, message, data = {}) {
             // قم بتغيير 'YOUR_RESOURCE_NAME_HERE' إلى اسم المجلد الفعلي لموردك
             // مثال: const resourceName = 'aura_menu';
-            const resourceName = 'YOUR_RESOURCE_NAME_HERE'; // <--- غيّر هذا السطر هنا أيضاً
+            const resourceName = 'basic-gamemode'; // <--- غيّر هذا السطر هنا أيضاً
 
             fetch(`https://${resourceName}/nuiDebugMessage`, {
                 method: 'POST',
@@ -181,7 +181,7 @@
         function sendNuiMessage(action, data = {}) {
             // قم بتغيير 'YOUR_RESOURCE_NAME_HERE' إلى اسم المجلد الفعلي لموردك
             // مثال: const resourceName = 'aura_menu';
-            const resourceName = 'YOUR_RESOURCE_NAME_HERE'; // <--- غيّر هذا السطر
+            const resourceName = 'basic-gamemode'; // <--- غيّر هذا السطر
 
             console.log(`[HTML] Attempting to send NUI message to resource: ${resourceName}, action: ${action}, Data:`, data);
             
