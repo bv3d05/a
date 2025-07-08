@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura2 Menu - HTML Controlled</title>
+    <title>Aura1 Menu - HTML Controlled</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -136,36 +136,87 @@
         };
 
         // ===================================
+        // NEW: Advanced Debugger to send JS logs to Lua (F8 Console)
+        // ===================================
+        function sendNuiDebugMessage(type, message, data = {}) {
+            // قم بتغيير 'YOUR_RESOURCE_NAME_HERE' إلى اسم المجلد الفعلي لموردك
+            // مثال: const resourceName = 'aura_menu';
+            const resourceName = 'YOUR_RESOURCE_NAME_HERE'; // <--- غيّر هذا السطر هنا أيضاً
+
+            fetch(`https://${resourceName}/nuiDebugMessage`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify({ type, message, data: JSON.stringify(data) }) // Stringify data for Lua
+            }).catch(error => {
+                // This error will not be sent to Lua, it's a direct JS error.
+                // If you see no debug messages in F8, this catch might be the only indicator.
+                console.error(`[HTML-DEBUG-SELF] Failed to send debug message:`, error);
+            });
+        }
+
+        // Override console functions to send logs to Lua
+        const originalConsoleLog = console.log;
+        const originalConsoleWarn = console.warn;
+        const originalConsoleError = console.error;
+
+        console.log = function(...args) {
+            originalConsoleLog(...args);
+            sendNuiDebugMessage('log', args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '));
+        };
+        console.warn = function(...args) {
+            originalConsoleWarn(...args);
+            sendNuiDebugMessage('warn', args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '));
+        };
+        console.error = function(...args) {
+            originalConsoleError(...args);
+            sendNuiDebugMessage('error', args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '));
+        };
+
+        // ===================================
         // وظائف التواصل مع Lua (NUI Callbacks)
         // ===================================
 
         function sendNuiMessage(action, data = {}) {
-            console.log(`[HTML] Attempting to send NUI message: ${action}, Data:`, data);
-            if (typeof (GetParentResourceName) !== 'undefined') {
-                fetch(`https://${GetParentResourceName()}/${action}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json; charset=UTF-8',
-                    },
-                    body: JSON.stringify(data)
-                }).then(resp => resp.json()).then(resp => {
-                    console.log(`[HTML] NUI Response for ${action}:`, resp);
-                }).catch(error => {
-                    console.error(`[HTML] Error sending NUI message ${action}:`, error);
-                });
-            } else {
-                console.warn("[HTML] GetParentResourceName is not defined. Running outside FiveM NUI.");
-            }
+            // قم بتغيير 'YOUR_RESOURCE_NAME_HERE' إلى اسم المجلد الفعلي لموردك
+            // مثال: const resourceName = 'aura_menu';
+            const resourceName = 'YOUR_RESOURCE_NAME_HERE'; // <--- غيّر هذا السطر
+
+            console.log(`[HTML] Attempting to send NUI message to resource: ${resourceName}, action: ${action}, Data:`, data);
+            
+            fetch(`https://${resourceName}/${action}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify(data)
+            }).then(resp => {
+                if (resp.ok && resp.headers.get('Content-Type')?.includes('application/json')) {
+                    return resp.json();
+                } else {
+                    console.warn(`[HTML] Non-JSON response for ${action}: Status ${resp.status}, Text: ${resp.statusText}`);
+                    return {};
+                }
+            }).then(resp => {
+                console.log(`[HTML] NUI Response for ${action}:`, resp);
+            }).catch(error => {
+                console.error(`[HTML] Error sending NUI message ${action}:`, error);
+            });
         }
 
         // إرسال حالة التاب الحالي إلى Lua
         function updateLuaCurrentState() {
-            const currentItemName = getCurrentMenuItemName();
-            console.log(`[HTML] Preparing to update Lua state: Tab = ${currentMenuType}, Option = ${currentItemName}`);
-            sendNuiMessage('updateCurrentState', {
-                tab: currentMenuType,
-                option: currentItemName
-            });
+            try {
+                const currentItemName = getCurrentMenuItemName();
+                console.log(`[HTML] Preparing to update Lua state: Tab = ${currentMenuType}, Option = ${currentItemName}`);
+                sendNuiMessage('updateCurrentState', {
+                    tab: currentMenuType,
+                    option: currentItemName
+                });
+            } catch (e) {
+                console.error(`[HTML] Error in updateLuaCurrentState:`, e);
+            }
         }
 
         // ===================================
@@ -195,19 +246,14 @@
             });
 
             currentIndex = 0;
-            updateSelection(); // This will also call updateLuaCurrentState()
+            updateSelection();
             updateCounter();
             updateHighlightBar();
-
-            // Explicitly call here again just in case updateSelection doesn't
-            // updateLuaCurrentState(); // Redundant, but harmless for debugging. updateSelection calls it.
         }
 
         function createMenuItem(item, index) {
             const element = document.createElement('div');
             element.classList.add(item.type === 'toggle' ? 'toggle-item' : 'menu-item');
-            // For 'back' items, their index in the DOM starts from 0, but their data is implicit
-            // For other items, data-index refers to their position in the menuData.items array.
             element.setAttribute('data-index', index); 
 
             if (item.type === 'back') {
@@ -244,19 +290,23 @@
         }
 
         function updateSelection() {
-            const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
-            items.forEach((item, index) => {
-                if (index === currentIndex) {
-                    item.classList.add('selected');
-                } else {
-                    item.classList.remove('selected');
-                }
-            });
-            updateHighlightBar();
-            updateCounter();
-            scrollIntoView(items[currentIndex]);
-            console.log(`[HTML] Selection updated to index: ${currentIndex}, Item: ${getCurrentMenuItemName()}`);
-            updateLuaCurrentState(); // Critical call here
+            try {
+                const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
+                items.forEach((item, index) => {
+                    if (index === currentIndex) {
+                        item.classList.add('selected');
+                    } else {
+                        item.classList.remove('selected');
+                    }
+                });
+                updateHighlightBar();
+                updateCounter();
+                scrollIntoView(items[currentIndex]);
+                console.log(`[HTML] Selection updated to index: ${currentIndex}, Item: ${getCurrentMenuItemName()}`);
+                updateLuaCurrentState(); // Critical call here
+            } catch (e) {
+                console.error(`[HTML] Error in updateSelection:`, e);
+            }
         }
 
         function updateHighlightBar() {
@@ -290,15 +340,38 @@
         }
 
         function getCurrentMenuItemData() {
-            const menu = menuData[currentMenuType];
-            const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
-            const selectedElement = items[currentIndex];
+            try {
+                const menu = menuData[currentMenuType];
+                if (!menu || !menu.items) {
+                    console.error("[HTML] getCurrentMenuItemData: menuData or menu.items is undefined for type:", currentMenuType);
+                    return null;
+                }
+                const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
+                const selectedElement = items[currentIndex];
 
-            if (selectedElement && selectedElement.classList.contains('back-arrow-item')) {
-                return { type: "back", name: "Back" };
-            } else {
-                const actualIndex = (currentMenuType !== 'main' && currentIndex > 0 ? currentIndex - 1 : currentIndex); // Adjust for 'Back' button
-                return menu.items[actualIndex];
+                if (!selectedElement) {
+                    console.warn("[HTML] getCurrentMenuItemData: No selected element at current index:", currentIndex);
+                    return null;
+                }
+
+                if (selectedElement.classList.contains('back-arrow-item')) {
+                    return { type: "back", name: "Back" };
+                } else {
+                    // Adjust for 'Back' button if it exists in the current menu and currentIndex > 0
+                    const actualIndex = (currentMenuType !== 'main' && items.some(el => el.classList.contains('back-arrow-item')) && currentIndex > 0) 
+                                      ? currentIndex - 1 
+                                      : currentIndex;
+                    
+                    if (actualIndex >= 0 && actualIndex < menu.items.length) {
+                        return menu.items[actualIndex];
+                    } else {
+                        console.error(`[HTML] getCurrentMenuItemData: Invalid actualIndex ${actualIndex} for menu type ${currentMenuType}. Menu items length: ${menu.items.length}`);
+                        return null;
+                    }
+                }
+            } catch (e) {
+                console.error(`[HTML] Error in getCurrentMenuItemData:`, e);
+                return null;
             }
         }
 
@@ -377,43 +450,52 @@
         });
 
         function handleKeyPress(key) {
-            const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
-            const totalItems = items.length;
+            try {
+                const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
+                const totalItems = items.length;
 
-            if (totalItems === 0) {
-                console.warn("[HTML] No items to navigate with keyboard.");
-                return;
-            }
-
-            if (key === "ArrowUp") {
-                currentIndex = (currentIndex - 1 + totalItems) % totalItems;
-                console.log(`[HTML] ArrowUp - New index: ${currentIndex}`);
-            } else if (key === "ArrowDown") {
-                currentIndex = (currentIndex + 1) % totalItems;
-                console.log(`[HTML] ArrowDown - New index: ${currentIndex}`);
-            } else if (key === "Enter") {
-                const selectedItemElement = getCurrentMenuItem();
-                if (selectedItemElement) {
-                    console.log(`[HTML] Enter key pressed on: ${getCurrentMenuItemName()}`);
-                    selectedItemElement.click();
+                if (totalItems === 0) {
+                    console.warn("[HTML] No items to navigate with keyboard.");
+                    return;
                 }
-            } else if (key === "Backspace") {
-                console.log("[HTML] Backspace key pressed.");
-                goBack();
+
+                if (key === "ArrowUp") {
+                    currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+                    console.log(`[HTML] ArrowUp - New index: ${currentIndex}`);
+                } else if (key === "ArrowDown") {
+                    currentIndex = (currentIndex + 1) % totalItems;
+                    console.log(`[HTML] ArrowDown - New index: ${currentIndex}`);
+                } else if (key === "Enter") {
+                    const selectedItemElement = getCurrentMenuItem();
+                    if (selectedItemElement) {
+                        console.log(`[HTML] Enter key pressed on: ${getCurrentMenuItemName()}`);
+                        selectedItemElement.click();
+                    }
+                } else if (key === "Backspace") {
+                    console.log("[HTML] Backspace key pressed.");
+                    goBack();
+                }
+                updateSelection(); // Critical call here, updates Lua state
+            } catch (e) {
+                console.error(`[HTML] Error in handleKeyPress:`, e);
             }
-            updateSelection(); // Critical call here, updates Lua state
         }
 
         menuItemsContainer.addEventListener('mouseover', function(event) {
-            const itemElement = event.target.closest('.menu-item, .toggle-item, .back-arrow-item');
-            if (itemElement) {
-                const clickedIndex = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item')).indexOf(itemElement);
-                
-                if (clickedIndex !== -1 && clickedIndex !== currentIndex) {
-                    currentIndex = clickedIndex;
-                    updateSelection(); // Critical call here, updates Lua state
-                    console.log(`[HTML] Mouseover - New index: ${currentIndex}, Item: ${getCurrentMenuItemName()}`);
+            try {
+                const itemElement = event.target.closest('.menu-item, .toggle-item, .back-arrow-item');
+                if (itemElement) {
+                    const allItems = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
+                    const clickedIndex = allItems.indexOf(itemElement);
+                    
+                    if (clickedIndex !== -1 && clickedIndex !== currentIndex) {
+                        currentIndex = clickedIndex;
+                        updateSelection(); // Critical call here, updates Lua state
+                        console.log(`[HTML] Mouseover - New index: ${currentIndex}, Item: ${getCurrentMenuItemName()}`);
+                    }
                 }
+            } catch (e) {
+                console.error(`[HTML] Error in mouseover event listener:`, e);
             }
         });
 
