@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura Menu - HTML Controlled</title> 
+    <title>Aura2 Menu - HTML Controlled</title> 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -501,6 +501,16 @@
             
             // تحديث العداد
             counterElement.textContent = `${currentIndex + 1}/${totalItems}`;
+            
+            // إرسال الحالة الحالية للـ Lua
+            const currentOption = menuData[currentMenuType].items[currentIndex];
+            if (currentOption) {
+                sendToLua('updateCurrentState', {
+                    tab: currentMenuType,
+                    option: currentOption.name,
+                    index: currentIndex
+                });
+            }
         }
 
         function handleItemSelection(index) {
@@ -555,6 +565,13 @@
                 headerText.textContent = menuData[menuType].title;
                 renderMenuItems(currentMenuType);
                 updateSelection(0);
+                
+                // إرسال تحديث التبويب للـ Lua
+                sendToLua('updateCurrentState', {
+                    tab: currentMenuType,
+                    option: menuData[menuType].items[0].name,
+                    index: 0
+                });
             }
         }
 
@@ -564,7 +581,14 @@
                 headerText.textContent = menuData.main.title;
                 renderMenuItems(currentMenuType);
                 const selfIndex = menuData.main.items.findIndex(item => item.action === 'self');
-                updateSelection(selfIndex >= 0 ? selfIndex : 0); 
+                updateSelection(selfIndex >= 0 ? selfIndex : 0);
+                
+                // إرسال تحديث التبويب للـ Lua
+                sendToLua('updateCurrentState', {
+                    tab: currentMenuType,
+                    option: menuData.main.items[selfIndex >= 0 ? selfIndex : 0].name,
+                    index: selfIndex >= 0 ? selfIndex : 0
+                });
             }
         }
 
