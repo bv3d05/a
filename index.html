@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Aura HTML Controlled Menu</title>
+    <title>Au1ra HTML Controlled Menu</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
@@ -20,7 +20,7 @@
         }
 
         .menu-container {
-            width: 700px; /* Adjusted width */
+            width: 700px; /* Wider to accommodate more content */
             max-height: 90vh; /* Max height to prevent overflow */
             background-color: rgba(29, 31, 33, 0.95); /* Darker, slightly transparent background */
             border-radius: 12px;
@@ -152,7 +152,7 @@
             color: #00bcd4; /* Light blue for status */
         }
 
-        /* Toggle Switch Styles (General for Fast Run, Noclip, Godmode) */
+        /* Toggle Switch Styles */
         .switch {
             position: relative;
             display: inline-block;
@@ -206,8 +206,25 @@
             transform: translateX(20px);
         }
 
-        /* SkyDive Specific Styles - Re-using the same switch/slider classes as they match the look */
-        /* For SkyDive Toggle, we can reuse .switch and .slider */
+        /* NEW: SkyDive Specific Styles (from previous response) */
+        .menu-item.skydive-toggle-item,
+        .menu-item.skydive-speed-slider,
+        .menu-item.skydive-keybind {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .menu-item.skydive-toggle-item:hover,
+        .menu-item.skydive-speed-slider:hover,
+        .menu-item.skydive-keybind:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
         .skydive-label {
             color: #fff;
             font-weight: bold;
@@ -216,13 +233,65 @@
         .skydive-value {
             color: #00bcd4; /* Light blue */
             font-weight: bold;
-            min-width: 30px; /* To prevent value from jumping too much */
-            text-align: right;
+        }
+
+        /* Toggle Switch Styles (re-using if you have one, or define new) */
+        .skydive-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .skydive-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .skydive-slider-round {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .skydive-slider-round:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .skydive-slider-round {
+            background-color: #00bcd4;
+        }
+
+        input:focus + .skydive-slider-round {
+            box-shadow: 0 0 1px #00bcd4;
+        }
+
+        input:checked + .skydive-slider-round:before {
+            -webkit-transform: translateX(20px);
+            -ms-transform: translateX(20px);
+            transform: translateX(20px);
         }
 
         /* Slider Input Styles */
         .skydive-slider-input {
-            width: 150px; /* Adjust width as needed for better usability */
+            width: 100px; /* Adjust width as needed */
             margin-left: 10px;
             -webkit-appearance: none;
             appearance: none;
@@ -259,10 +328,8 @@
             border-radius: 5px;
             color: #fff;
             font-weight: bold;
-            min-width: 60px; /* To prevent flickering */
+            min-width: 50px; /* To prevent flickering */
             text-align: center;
-            cursor: pointer; /* Indicate it's clickable */
-            transition: border 0.2s ease, box-shadow 0.2s ease;
         }
 
         .keybind-input-active {
@@ -274,6 +341,7 @@
             from { box-shadow: 0 0 0px #00bcd4; }
             to { box-shadow: 0 0 10px #00bcd4; }
         }
+
     </style>
 </head>
 <body>
@@ -319,78 +387,81 @@
                 </div>
 
                 <hr style="border: 0; border-top: 1px dashed rgba(255,255,255,0.1); margin: 15px 0;">
-                <div class="menu-item" data-action="skydive_toggle_item"> <span class="skydive-label">SkyDive</span>
-                    <label class="switch"> <input type="checkbox" id="skydiveToggleCheckbox">
-                        <span class="slider"></span> </label>
+                <div class="menu-item skydive-toggle-item">
+                    <span class="skydive-label">SkyDive Toggle</span>
+                    <label class="skydive-switch">
+                        <input type="checkbox" id="skydiveToggleCheckbox">
+                        <span class="skydive-slider-round"></span>
+                    </label>
                 </div>
 
-                <div class="menu-item" data-action="skydive_speed_item">
+                <div class="menu-item skydive-speed-slider">
                     <span class="skydive-label">SkyDive Speed</span>
                     <input type="range" min="1" max="500" value="10" class="skydive-slider-input" id="skydiveSpeedSlider">
                     <span class="skydive-value" id="skydiveSpeedValue">10</span>
                 </div>
 
-                <div class="menu-item" data-action="skydive_keybind_item">
+                <div class="menu-item skydive-keybind">
                     <span class="skydive-label">SkyDive Keybind</span>
                     <div class="skydive-key-display" id="skydiveKeyDisplay">None</div>
                 </div>
             </div>
 
             <div class="menu-category" id="online-tab">
-                <div class="menu-item" data-action="online_option1">
+                <div class="menu-item" data-action="online">
                     <span class="menu-item-label">Online Option 1</span>
                     <span class="menu-item-status">Enabled</span>
                 </div>
-                <div class="menu-item" data-action="online_option2">
+                <div class="menu-item" data-action="online">
                     <span class="menu-item-label">Online Option 2</span>
                     <span class="menu-item-status">Disabled</span>
                 </div>
             </div>
 
             <div class="menu-category" id="combat-tab">
-                <div class="menu-item" data-action="combat_option1">
+                <div class="menu-item" data-action="combat">
                     <span class="menu-item-label">Combat Option 1</span>
                     <span class="menu-item-status">Ready</span>
                 </div>
             </div>
 
             <div class="menu-category" id="visual-tab">
-                <div class="menu-item" data-action="visual_option1">
+                <div class="menu-item" data-action="visual">
                     <span class="menu-item-label">Visual Option 1</span>
                     <span class="menu-item-status">Active</span>
                 </div>
             </div>
 
             <div class="menu-category" id="vehicle-tab">
-                <div class="menu-item" data-action="vehicle_option1">
+                <div class="menu-item" data-action="vehicle">
                     <span class="menu-item-label">Vehicle Option 1</span>
                     <span class="menu-item-status">Available</span>
                 </div>
             </div>
 
             <div class="menu-category" id="misc-tab">
-                <div class="menu-item" data-action="misc_option1">
+                <div class="menu-item" data-action="misc">
                     <span class="menu-item-label">Misc Option 1</span>
                     <span class="menu-item-status">Info</span>
                 </div>
             </div>
 
             <div class="menu-category" id="destructive-tab">
-                <div class="menu-item" data-action="destructive_option1">
+                <div class="menu-item" data-action="destructive">
                     <span class="menu-item-label">Destructive Option 1</span>
                     <span class="menu-item-status">Warning</span>
                 </div>
             </div>
 
             <div class="menu-category" id="triggers-tab">
-                <div class="menu-item" data-action="trigger_event1">
+                <div class="menu-item" data-action="triggers">
                     <span class="menu-item-label">Trigger 1</span>
                     <span class="menu-item-status">Execute</span>
                 </div>
             </div>
 
             <div class="menu-category" id="settings-tab">
-                <div class="menu-item" data-action="settings_option1">
+                <div class="menu-item" data-action="settings">
                     <span class="menu-item-label">Settings Option 1</span>
                     <span class="menu-item-status">Adjust</span>
                 </div>
@@ -399,6 +470,7 @@
     </div>
 
     <script>
+        // Resource Name - MUST MATCH YOUR FXMANIFEST.LUA / MachoInjectResource NAME
         const resourceName = 'basic-gamemode'; // <--- تأكد أن هذا مطابق لاسم موردك!
 
         const menuContainer = document.getElementById('menuContainer');
@@ -434,15 +506,12 @@
             let optionLabel = "Menu Closed";
             if (menuContainer.classList.contains('show')) {
                 if (currentSelectedItem) {
-                    // Try to get label from .menu-item-label or .skydive-label
                     const labelElement = currentSelectedItem.querySelector('.menu-item-label, .skydive-label');
                     if (labelElement) {
                         optionLabel = labelElement.textContent.trim();
-                    } 
-                    // Special handling for SkyDive Speed and Keybind if no direct label
-                    if (currentSelectedItem.querySelector('#skydiveSpeedSlider')) {
+                    } else if (currentSelectedItem.classList.contains('skydive-speed-slider')) {
                         optionLabel = `SkyDive Speed: ${document.getElementById('skydiveSpeedSlider').value}`;
-                    } else if (currentSelectedItem.querySelector('#skydiveKeyDisplay')) {
+                    } else if (currentSelectedItem.classList.contains('skydive-keybind')) {
                         optionLabel = `SkyDive Keybind: ${document.getElementById('skydiveKeyDisplay').textContent}`;
                     }
                 } else {
@@ -464,10 +533,7 @@
         function showMenu() {
             menuContainer.classList.add('show');
             // Select the first item in the current active tab
-            const activeCategory = categories[Array.from(tabs).findIndex(tab => tab.dataset.tab === currentActiveTab)];
-            if (activeCategory) {
-                selectMenuItem(activeCategory.querySelector('.menu-item'));
-            }
+            selectMenuItem(categories[Array.from(tabs).findIndex(tab => tab.dataset.tab === currentActiveTab)].querySelector('.menu-item'));
             updateLuaCurrentState(); // Send initial state on show
         }
 
@@ -540,24 +606,22 @@
             if (!currentSelectedItem) return;
 
             const action = currentSelectedItem.dataset.action;
-
-            if (action && currentSelectedItem.querySelector('input[type="checkbox"]')) {
-                // For toggle items (Fast Run, Noclip, Godmode, SkyDive Toggle)
-                const checkbox = currentSelectedItem.querySelector('input[type="checkbox"]');
-                checkbox.checked = !checkbox.checked;
-                // Dispatch change event to trigger its specific listener (e.g., skydiveToggleCheckbox.addEventListener('change'))
-                checkbox.dispatchEvent(new Event('change'));
-                sendNuiDebugMessage('log', `[HTML] Activated toggle item: ${action}, New State: ${checkbox.checked}`);
-            } else if (currentSelectedItem.querySelector('#skydiveKeyDisplay')) {
-                // For SkyDive Keybind item
-                currentSelectedItem.click(); // Simulate a click to initiate key binding
-                sendNuiDebugMessage('log', `[HTML] Activated SkyDive Keybind selection.`);
-            } else if (action) {
-                // For general menu items (Online options, Combat, etc.)
-                sendNuiMessage('menuSelected', { action: action, name: currentSelectedItem.querySelector('.menu-item-label')?.textContent.trim() || action });
-                sendNuiDebugMessage('log', `[HTML] Activated general menu item: ${action}`);
+            // Handle specific item types
+            if (action) { // For generic toggles and selections
+                if (currentSelectedItem.querySelector('input[type="checkbox"]')) {
+                    const checkbox = currentSelectedItem.querySelector('input[type="checkbox"]');
+                    checkbox.checked = !checkbox.checked;
+                    // Trigger change event to activate its listener
+                    checkbox.dispatchEvent(new Event('change'));
+                } else {
+                    sendNuiMessage('menuSelected', { action: action, name: currentSelectedItem.querySelector('.menu-item-label').textContent.trim() });
+                    sendNuiDebugMessage('log', `[HTML] Activated menu item: ${action}`);
+                }
+            } else if (currentSelectedItem.classList.contains('skydive-keybind')) {
+                // Manually trigger click event for keybind item
+                currentSelectedItem.click();
             }
-            // Sliders are generally manipulated with left/right arrows, not Enter
+            // Sliders are adjusted with arrow keys, not Enter
         }
 
         // ======================================
@@ -570,7 +634,7 @@
 
             if (item.type === "showMenu") {
                 showMenu();
-                // Initialize existing toggle states
+                // Initialize toggle states
                 document.getElementById('fastrun-toggle').checked = item.fastRunActive || false;
                 document.getElementById('noclip-toggle').checked = item.noclipActive || false;
                 document.getElementById('godmode-toggle').checked = item.godmodeActive || false;
@@ -581,9 +645,8 @@
                     document.getElementById('skydiveSpeedSlider').value = item.initialSkydiveState.speed;
                     document.getElementById('skydiveSpeedValue').textContent = item.initialSkydiveState.speed;
                     
-                    currentSkydiveKey = item.initialSkydiveState.keybind; // Update JS variable
-                    const keyName = currentSkydiveKey !== 0 ? 
-                                    FiveMKeyToName(currentSkydiveKey) : "None";
+                    const keyName = item.initialSkydiveState.keybind !== 0 ? 
+                                    FiveMKeyToName(item.initialSkydiveState.keybind) : "None";
                     document.getElementById('skydiveKeyDisplay').textContent = keyName;
                     sendNuiDebugMessage('log', `[HTML] Initialized SkyDive UI: Enabled=${item.initialSkydiveState.isEnabled}, Speed=${item.initialSkydiveState.speed}, Key=${keyName}`);
                 }
@@ -599,20 +662,6 @@
                     activateSelectedItem();
                 } else if (item.key === "Backspace") {
                     sendNuiMessage('hideMenu'); // Ask Lua to hide menu
-                } else if (item.key === "ArrowLeft" || item.key === "ArrowRight") {
-                    // Handle slider adjustments with left/right arrows
-                    if (currentSelectedItem && currentSelectedItem.querySelector('#skydiveSpeedSlider')) {
-                        const slider = document.getElementById('skydiveSpeedSlider');
-                        const step = 5; // How much to change the slider per arrow press
-                        if (item.key === "ArrowLeft") {
-                            slider.value = Math.max(parseInt(slider.value) - step, parseInt(slider.min));
-                        } else if (item.key === "ArrowRight") {
-                            slider.value = Math.min(parseInt(slider.value) + step, parseInt(slider.max));
-                        }
-                        slider.dispatchEvent(new Event('input')); // Update display
-                        slider.dispatchEvent(new Event('change')); // Send to Lua
-                        sendNuiDebugMessage('log', `[HTML] SkyDive Speed slider adjusted by arrow key: ${slider.value}`);
-                    }
                 }
             } else if (item.type === "updateUISkyDiveState") {
                 // NEW: Update SkyDive toggle from Lua (if activated by keybind/command)
@@ -632,26 +681,27 @@
             });
         });
 
-        // Menu Item Click Listeners (re-added for all general menu-items)
+        // Menu Item Click Listeners (for general items and existing toggles)
+        // Note: For new custom elements like skydive, we use specific listeners below
         menuItems.forEach(item => {
+            // Exclude skydive items from generic click handling if they have specific behavior
+            if (item.classList.contains('skydive-toggle-item') || 
+                item.classList.contains('skydive-speed-slider') || 
+                item.classList.contains('skydive-keybind')) {
+                return; 
+            }
+
             item.addEventListener('click', function() {
                 selectMenuItem(this);
                 const action = this.dataset.action;
                 if (action) {
                     const checkbox = this.querySelector('input[type="checkbox"]');
                     if (checkbox) {
-                        // For generic toggles (Fast Run, Noclip, Godmode) and SkyDive Toggle
-                        // The change event listener will handle the NUI message
-                        checkbox.checked = !checkbox.checked; // Visual toggle
-                        checkbox.dispatchEvent(new Event('change')); // Trigger listener
-                    } else if (this.querySelector('#skydiveKeyDisplay')) {
-                        // This is the SkyDive Keybind item, handled by specific click listener below
-                        // No general NUI message for this click, specific keybind logic will fire
-                    } else if (this.querySelector('#skydiveSpeedSlider')) {
-                        // This is the SkyDive Speed slider, clicks don't change value, only selection
+                        checkbox.checked = !checkbox.checked; // Toggle visually
+                        sendNuiMessage('toggleAction', { action: action, state: checkbox.checked, name: this.querySelector('.menu-item-label').textContent.trim() });
+                        sendNuiDebugMessage('log', `[HTML] Toggle action sent: ${action}, State: ${checkbox.checked}`);
                     } else {
-                        // For regular selectable menu items (Online, Combat, etc.)
-                        sendNuiMessage('menuSelected', { action: action, name: this.querySelector('.menu-item-label')?.textContent.trim() || action });
+                        sendNuiMessage('menuSelected', { action: action, name: this.querySelector('.menu-item-label').textContent.trim() });
                         sendNuiDebugMessage('log', `[HTML] Menu item selected: ${action}`);
                     }
                 }
@@ -676,7 +726,7 @@
         });
 
         // ======================================
-        // NEW: SkyDive HTML Control Logic (Specific Listeners)
+        // NEW: SkyDive HTML Control Logic
         // ======================================
 
         // SkyDive Toggle Checkbox
@@ -694,6 +744,8 @@
         // Update display value as slider moves
         skydiveSpeedSlider.addEventListener('input', function() {
             skydiveSpeedValueDisplay.textContent = this.value;
+            // You can send real-time updates here if needed, but 'change' is usually enough
+            // sendNuiDebugMessage('log', `[HTML] SkyDive Speed slider input: ${this.value}`);
         });
 
         // Send value to Lua when slider is released (or value changes after input)
@@ -706,13 +758,16 @@
 
         // SkyDive Keybind Logic
         let skydiveKeyDisplay = document.getElementById('skydiveKeyDisplay');
-        let isBindingKey = false; 
-        let currentSkydiveKey = 0; // Stores the FiveM control code
+        let isBindingKey = false; // Flag to indicate if we're waiting for a key press
+        let currentSkydiveKey = 0; // Store the current key code in JS
 
-        // Helper to convert JavaScript keyCode to a readable name
+        // Helper to convert FiveM key codes (like those from IsControlJustPressed) to readable names
+        // NOTE: This map is incomplete and simplified. For a full map, you'd need a much larger object
+        // or a server-side lookup if you handle keyboard input differently.
+        // FiveM control codes (0-255) are specific. JS event.keyCode are standard.
+        // We are sending JS keyCode directly to Lua and relying on Lua's GetControlName.
         function FiveMKeyToName(keyCode) {
-            // This is a simplified mapping. For a comprehensive list, you'd need more.
-            // Example common keys for JS keyCode:
+            // Common keyboard key codes (JS keyCode values)
             const jsKeyMap = {
                 8: "Backspace", 9: "Tab", 13: "Enter", 16: "Shift", 17: "Ctrl", 18: "Alt", 27: "Escape", 32: "Space",
                 37: "ArrowLeft", 38: "ArrowUp", 39: "ArrowRight", 40: "ArrowDown",
@@ -721,12 +776,10 @@
                 75: "K", 76: "L", 77: "M", 78: "N", 79: "O", 80: "P", 81: "Q", 82: "R", 83: "S", 84: "T",
                 85: "U", 86: "V", 87: "W", 88: "X", 89: "Y", 90: "Z",
                 112: "F1", 113: "F2", 114: "F3", 115: "F4", 116: "F5", 117: "F6", 118: "F7", 119: "F8",
-                120: "F9", 121: "F10", 122: "F11", 123: "F12",
-                186: ";", 187: "=", 188: ",", 189: "-", 190: ".", 191: "/", 192: "`",
-                219: "[", 220: "\\", 221: "]", 222: "'"
+                120: "F9", 121: "F10", 122: "F11", 123: "F12"
                 // Add more as needed
             };
-            return jsKeyMap[keyCode] || `Key ${keyCode}`;
+            return jsKeyMap[keyCode] || `Key ${keyCode}`; // Fallback to "Key [code]"
         }
 
         // Event listener for clicking the keybind display
@@ -755,7 +808,7 @@
                 event.preventDefault(); // Prevent default browser action (e.g., scrolling with spacebar)
                 isBindingKey = false;
                 
-                const newKey = event.keyCode; 
+                const newKey = event.keyCode; // This is the standard JS key code
                 currentSkydiveKey = newKey; // Update JS variable
                 skydiveKeyDisplay.textContent = FiveMKeyToName(newKey); // Update display
                 skydiveKeyDisplay.classList.remove('keybind-input-active');
@@ -767,10 +820,14 @@
         });
 
         // Initialize first item selection and tab
-        switchTab(currentActiveTab); 
+        switchTab(currentActiveTab); // Ensure the default tab is shown and selected
 
+        // Initial fetch call to Lua to signify HTML is loaded and ready for initial states
+        // This is important for Lua to send the current state of features when the menu opens
         window.addEventListener('DOMContentLoaded', () => {
             sendNuiDebugMessage('log', '[HTML] DOMContentLoaded. Ready for NUI messages.');
+            // Send a ready signal to Lua to request initial state if menu is to be opened directly
+            // sendNuiMessage('htmlReady', {}); // You could add this if Lua needs a specific signal to send initial data
         });
     </script>
 </body>
