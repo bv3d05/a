@@ -3,10 +3,11 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura2 Menu - HTML Controlled</title> 
+    <title>Aura2 Menu - HTML Controlled</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* CSS الخاص بك بدون تغييرات كبيرة، فقط تأكد من أنه هو نفسه */
         * {
             margin: 0;
             padding: 0;
@@ -19,24 +20,24 @@
         html, body {
             width: 100%;
             height: 100%;
-            background-color: transparent !important; 
+            background-color: transparent !important;
             overflow: hidden;
             font-family: 'Roboto', sans-serif;
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .menu-container {
-            width: 387px; 
-            height: 520px; 
-            background: rgba(0, 0, 0, 0.6); 
-            border-radius: 8px; 
-            box-shadow: 
-                0 4px 15px rgba(0, 0, 0, 0.4), 
-                inset 0 0 8px rgba(255, 255, 0, 0.08); 
+            width: 387px;
+            height: 520px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 8px;
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.4),
+                inset 0 0 8px rgba(255, 255, 0, 0.08);
             overflow: hidden;
-            position: relative; 
+            position: relative;
             display: flex;
             flex-direction: column;
             opacity: 1;
@@ -44,39 +45,39 @@
         }
         
         .menu-header {
-            height: 137px; 
-            background: linear-gradient(135deg, rgba(255, 255, 0, 0.95) 0%, rgba(200, 200, 0, 0.95) 100%); 
+            height: 137px;
+            background: linear-gradient(135deg, rgba(255, 255, 0, 0.95) 0%, rgba(200, 200, 0, 0.95) 100%);
             position: relative;
-            background-size: cover; 
-            background-position: center top; 
+            background-size: cover;
+            background-position: center top;
             background-repeat: no-repeat;
-            border-top-left-radius: 7px; 
+            border-top-left-radius: 7px;
             border-top-right-radius: 7px;
-            box-shadow: inset 0 -2px 6px rgba(255, 255, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.2); 
+            box-shadow: inset 0 -2px 6px rgba(255, 255, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .header-home-text {
-            position: absolute; 
+            position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: #000000; 
+            background: #000000;
             color: #ffffff;
             font-family: 'Roboto', sans-serif;
-            font-size: 12px; 
-            font-weight: 600; 
+            font-size: 12px;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px; 
-            text-align: center; 
-            padding: 8px; 
-            border-radius: 0; 
-            box-shadow: none; 
+            letter-spacing: 1px;
+            text-align: center;
+            padding: 8px;
+            border-radius: 0;
+            box-shadow: none;
         }
 
         .menu-items {
             padding: 4px 0;
-            height: calc(100% - 137px - 32px); 
-            overflow-y: hidden; 
+            height: calc(100% - 137px - 32px);
+            overflow-y: scroll; /* تغيير إلى scroll لتمكين التمرير التلقائي */
             position: relative;
             display: flex;
             flex-direction: column;
@@ -94,7 +95,7 @@
             cursor: pointer;
             position: relative;
             min-height: 38px;
-            transition: none; 
+            transition: none; /* حافظ على الانتقال "none" للتحكم اليدوي */
             z-index: 2;
         }
 
@@ -103,11 +104,11 @@
         }
 
         .menu-item.selected, .back-arrow-item.selected {
-            background: transparent; 
-            box-shadow: none; 
-            border-radius: 4px; 
-            transform: none; 
-            transition: none; 
+            background: transparent;
+            box-shadow: none;
+            border-radius: 4px;
+            transform: none;
+            transition: none;
         }
 
         .highlight-bar {
@@ -115,10 +116,10 @@
             left: 0;
             width: 100%;
             height: 38px;
-            background: rgba(255, 255, 0, 0.08); 
-            border-radius: 3px; 
-            z-index: 1; 
-            transition: top 0.2s ease-out;
+            background: rgba(255, 255, 0, 0.08);
+            border-radius: 3px;
+            z-index: 1;
+            transition: top 0.2s ease-out; /* انتقال سلس لشريط التحديد */
         }
 
         .menu-item .icon, .back-arrow-item .icon {
@@ -129,14 +130,14 @@
             align-items: center;
             justify-content: center;
             font-size: 13px;
-            color: #d0d0d0; 
-            transition: none; 
+            color: #d0d0d0;
+            transition: none;
             position: relative;
             z-index: 2;
         }
         
         .menu-item.selected .icon, .back-arrow-item.selected .icon {
-            color: rgb(255, 255, 0); 
+            color: rgb(255, 255, 0);
         }
 
         .menu-item .text, .back-arrow-item .text {
@@ -144,37 +145,37 @@
             font-family: 'Roboto', sans-serif;
             font-size: 13px;
             font-weight: 500;
-            color: #f0f0f0; 
-            transition: none; 
+            color: #f0f0f0;
+            transition: none;
             position: relative;
             z-index: 2;
         }
         
         .menu-item.selected .text, .back-arrow-item.selected .text {
-            color: rgb(255, 255, 0); 
+            color: rgb(255, 255, 0);
         }
 
         .menu-item .arrow {
             position: relative;
             z-index: 2;
-            color: #d0d0d0; 
-            transition: none; 
+            color: #d0d0d0;
+            transition: none;
         }
 
         .menu-item.selected .arrow {
-            color: rgb(255, 255, 0); 
+            color: rgb(255, 255, 0);
         }
 
         .toggle-item {
             display: flex;
             align-items: center;
-            justify-content: space-between; 
+            justify-content: space-between;
             padding: 5px 12px;
             margin: 0;
             cursor: pointer;
             position: relative;
             min-height: 38px;
-            transition: none; 
+            transition: none;
             z-index: 2;
         }
 
@@ -183,7 +184,7 @@
         }
 
         .toggle-item.selected .toggle-text {
-            color: rgb(255, 255, 0); 
+            color: rgb(255, 255, 0);
         }
 
         .toggle-item .toggle-text {
@@ -191,56 +192,56 @@
             font-family: 'Roboto', sans-serif;
             font-size: 13px;
             font-weight: 500;
-            color: #f0f0f0; 
+            color: #f0f0f0;
         }
 
         .toggle-switch {
             position: relative;
             display: inline-block;
-            width: 44px; 
-            height: 22px; 
+            width: 44px;
+            height: 22px;
             border-radius: 11px;
-            background-color: rgba(100, 100, 100, 0.8); 
+            background-color: rgba(100, 100, 100, 0.8);
             transition: background-color 0.2s ease-out, box-shadow 0.2s ease-out;
-            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.4); 
-            flex-shrink: 0; 
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.4);
+            flex-shrink: 0;
         }
 
         .toggle-switch::before {
             content: '';
             position: absolute;
-            width: 18px; 
+            width: 18px;
             height: 18px;
             border-radius: 50%;
-            background-color: #fff; 
+            background-color: #fff;
             top: 2px;
             left: 2px;
             transition: transform 0.2s ease-out, background-color 0.2s ease-out;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
         }
 
         .toggle-switch.on {
-            background-color: rgb(255, 255, 0); 
-            box-shadow: 0 0 8px rgba(255, 255, 0, 0.6), 0 0 10px rgba(255, 255, 0, 0.4); 
+            background-color: rgb(255, 255, 0);
+            box-shadow: 0 0 8px rgba(255, 255, 0, 0.6), 0 0 10px rgba(255, 255, 0, 0.4);
         }
 
         .toggle-switch.on::before {
-            transform: translateX(22px); 
-            background-color: #fff; 
+            transform: translateX(22px);
+            background-color: #fff;
         }
 
         .menu-footer {
-            background: rgba(8, 8, 8, 0.7); 
+            background: rgba(8, 8, 8, 0.7);
             padding: 8px 16px;
             font-family: 'Roboto', sans-serif;
             font-size: 11px;
             color: #b0b0b0;
-            border-top: 1px solid rgba(255, 255, 0, 0.25); 
+            border-top: 1px solid rgba(255, 255, 0, 0.25);
             display: flex;
             justify-content: space-between;
             align-items: center;
             min-height: 32px;
-            border-bottom-left-radius: 7px; 
+            border-bottom-left-radius: 7px;
             border-bottom-right-radius: 7px;
         }
 
@@ -250,13 +251,13 @@
         }
 
         .menu-footer .counter {
-            background: rgba(255, 255, 0, 0.1); 
+            background: rgba(255, 255, 0, 0.1);
             border-radius: 6px;
-            color: rgb(255, 255, 0); 
+            color: rgb(255, 255, 0);
             font-weight: 600;
             font-size: 11px;
             padding: 2px 5px;
-            box-shadow: 0 1px 3px rgba(255, 255, 0, 0.2); 
+            box-shadow: 0 1px 3px rgba(255, 255, 0, 0.2);
         }
 
         .notification-container {
@@ -270,24 +271,24 @@
         }
 
         .notification {
-            background: rgba(25, 25, 25, 0.85); 
-            border: 1px solid rgba(255, 255, 0, 0.4); 
-            padding: 14px 18px; 
-            border-radius: 10px; 
+            background: rgba(25, 25, 25, 0.85);
+            border: 1px solid rgba(255, 255, 0, 0.4);
+            padding: 14px 18px;
+            border-radius: 10px;
             min-width: 260px;
             max-width: 320px;
-            box-shadow: 
-                0 6px 20px rgba(0, 0, 0, 0.5), 
-                0 0 0 1px rgba(255, 255, 255, 0.05); 
+            box-shadow:
+                0 6px 20px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
             display: flex;
             align-items: center;
-            animation: notificationFadeIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; 
+            animation: notificationFadeIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             opacity: 0;
-            transform: translateY(10px); 
+            transform: translateY(10px);
         }
 
         .notification.fade-out {
-            animation: notificationFadeOut 0.25s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards; 
+            animation: notificationFadeOut 0.25s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
         }
 
         @keyframes notificationFadeIn {
@@ -318,11 +319,11 @@
         }
 
         .notification-icon {
-            font-size: 18px; 
-            margin-right: 10px; 
-            color: rgb(255, 255, 0); 
-            text-shadow: none; 
-            animation: none; 
+            font-size: 18px;
+            margin-right: 10px;
+            color: rgb(255, 255, 0);
+            text-shadow: none;
+            animation: none;
         }
         
         .notification-text {
@@ -331,30 +332,30 @@
 
         .notification-title {
             font-family: 'Roboto', sans-serif;
-            font-size: 15px; 
+            font-size: 15px;
             font-weight: 700;
             color: #ffffff;
-            margin-bottom: 2px; 
-            text-shadow: none; 
+            margin-bottom: 2px;
+            text-shadow: none;
         }
 
         .notification-message {
             font-family: 'Roboto', sans-serif;
-            font-size: 12px; 
+            font-size: 12px;
             font-weight: 500;
-            color: #d1d5db; 
-            text-shadow: none; 
+            color: #d1d5db;
+            text-shadow: none;
         }
 
         .notification-timer {
             width: 100%;
-            height: 2px; 
-            background: rgb(255, 255, 0); 
+            height: 2px;
+            background: rgb(255, 255, 0);
             position: absolute;
             bottom: 0;
             left: 0;
             animation: timerProgress 4s linear forwards;
-            border-radius: 0 0 8px 8px; 
+            border-radius: 0 0 8px 8px;
         }
 
         @keyframes timerProgress {
@@ -371,7 +372,7 @@
 <body>
     <div class="menu-container hidden" id="mainMenu" tabindex="0">
         <div class="menu-header" id="menuHeader">
-            <div class="header-home-text" id="headerText">HOME</div> 
+            <div class="header-home-text" id="headerText">HOME</div>
         </div>
 
         <div class="menu-items" id="menuItemsContainer">
@@ -380,7 +381,7 @@
 
         <div class="menu-footer">
             <span class="version">Version: HTML Controlled | 24hrs ago</span>
-            <span class="counter" id="counter">1/9</span> 
+            <span class="counter" id="counter">1/9</span>
         </div>
     </div>
 
@@ -388,217 +389,341 @@
 
     <script>
         // إعدادات أساسية
-        const bannerImageUrl = 'https://media.discordapp.net/attachments/1385473748068728922/1385879507289899148/Untitled12_20250621101005.png?ex=6857ac5e&is=68565ade&hm=d6b1c32143168757f493fcfe79cb7dad4849f8b56e7ca841ad23888219fe491e&=&format=webp&quality=lossless'; 
+        const bannerImageUrl = 'https://media.discordapp.net/attachments/1385473748068728922/1385879507289899148/Untitled12_20250621101005.png?ex=6857ac5e&is=68565ade&hm=d6b1c32143168757f493fcfe79cb7dad4849f8b56e7ca841ad23888219fe491e&=&format=webp&quality=lossless';
 
-        let currentIndex = 0; 
-        let currentMenuType = 'main';
+        let currentIndex = 0;
+        let currentMenuType = 'main'; // لتتبع القائمة الفرعية الحالية
         let isMenuVisible = false;
+        const menuHistory = []; // لتخزين مسار القائمة للعودة للخلف
 
         // عناصر DOM
-        const menuContainer = document.getElementById('mainMenu'); 
-        const headerText = document.getElementById('headerText'); 
-        const menuItemsContainer = document.getElementById('menuItemsContainer'); 
-        let highlightBar = document.querySelector('.highlight-bar'); 
-        const counterElement = document.getElementById('counter'); 
+        const menuContainer = document.getElementById('mainMenu');
+        const headerText = document.getElementById('headerText');
+        const menuItemsContainer = document.getElementById('menuItemsContainer');
+        let highlightBar = document.querySelector('.highlight-bar');
+        const counterElement = document.getElementById('counter');
         const notificationContainer = document.getElementById('notificationContainer');
+        const menuHeader = document.getElementById('menuHeader');
+
+        // تطبيق صورة الهيدر
+        menuHeader.style.backgroundImage = `url(${bannerImageUrl})`;
 
         // بيانات القوائم
         const menuData = {
             main: {
                 title: 'HOME',
                 items: [
-                    { name: "Self", icon: '<i class="fa-solid fa-user"></i>', desc: "Player Options", action: "self" },
-                    { name: "Online", icon: '<i class="fa-solid fa-desktop"></i>', desc: "Online Features", action: "online" },
-                    { name: "Combat/Weapons", icon: '<i class="fa-solid fa-crosshairs"></i>', desc: "Weapon System", action: "combat" },
-                    { name: "Visual", icon: '<i class="fa-solid fa-eye"></i>', desc: "Visual Effects", action: "visual" },
-                    { name: "Vehicle", icon: '<i class="fa-solid fa-car"></i>', desc: "Vehicle Menu", action: "vehicle" },
-                    { name: "Miscellaneous", icon: '<i class="fa-solid fa-folder-open"></i>', desc: "Other Options", action: "misc" },
-                    { name: "Destructive", icon: '<i class="fa-solid fa-bomb"></i>', desc: "Destruction Tools", action: "destructive" },
-                    { name: "Triggers", icon: '<i class="fa-solid fa-bolt"></i>', desc: "Event Triggers", action: "triggers" },
-                    { name: "Settings", icon: '<i class="fa-solid fa-gear"></i>', desc: "System Settings", action: "settings" }
+                    { name: "Self Options", icon: '<i class="fa-solid fa-user"></i>', type: "submenu", target: "self" },
+                    { name: "Online Options", icon: '<i class="fa-solid fa-desktop"></i>', type: "submenu", target: "online" },
+                    { name: "Combat/Weapons", icon: '<i class="fa-solid fa-crosshairs"></i>', type: "submenu", target: "combat" },
+                    { name: "Visual Options", icon: '<i class="fa-solid fa-eye"></i>', type: "submenu", target: "visual" },
+                    { name: "Vehicle Options", icon: '<i class="fa-solid fa-car"></i>', type: "submenu", target: "vehicle" },
+                    { name: "Miscellaneous", icon: '<i class="fa-solid fa-folder-open"></i>', type: "submenu", target: "misc" },
+                    { name: "Destructive Tools", icon: '<i class="fa-solid fa-bomb"></i>', type: "submenu", target: "destructive" },
+                    { name: "Event Triggers", icon: '<i class="fa-solid fa-bolt"></i>', type: "submenu", target: "triggers" },
+                    { name: "Settings", icon: '<i class="fa-solid fa-gear"></i>', type: "submenu", target: "settings" }
                 ]
             },
             self: {
-                title: 'SELF',
+                title: 'SELF OPTIONS',
                 items: [
-                    { name: "Back", icon: '<i class="fa-solid fa-arrow-left"></i>', desc: "Return to Main Menu", action: "back" },
-                    { name: "Fast Run", action: "fastrun_toggle", type: "toggle", checked: false },
-                    { name: "Noclip", action: "noclip_toggle", type: "toggle", checked: false },
-                    { name: "Godmode", action: "godmode_toggle", type: "toggle", checked: false },
+                    { name: "Enable Fast Run", icon: '<i class="fa-solid fa-person-running"></i>', type: "toggle", action: "fastrun_toggle", state: false },
+                    { name: "Enable Noclip", icon: '<i class="fa-solid fa-ghost"></i>', type: "toggle", action: "noclip_toggle", state: false },
+                    { name: "Enable Godmode", icon: '<i class="fa-solid fa-shield-halved"></i>', type: "toggle", action: "godmode_toggle", state: false },
+                    { name: "Heal Player", icon: '<i class="fa-solid fa-heart-pulse"></i>', type: "action", action: "heal_player" },
+                    { name: "Clean Player", icon: '<i class="fa-solid fa-broom"></i>', type: "action", action: "clean_player" }
                 ]
-            }
+            },
+            online: {
+                title: 'ONLINE OPTIONS',
+                items: [
+                    { name: "Players List", icon: '<i class="fa-solid fa-users"></i>', type: "submenu", target: "players_list" },
+                    { name: "Give All Weapons", icon: '<i class="fa-solid fa-gun"></i>', type: "action", action: "give_all_weapons" }
+                ]
+            },
+            players_list: {
+                title: 'PLAYERS LIST',
+                items: [
+                    // هذا سيتم ملؤه ديناميكياً لاحقاً إذا أردت جلب اللاعبين
+                    // كمثال:
+                    { name: "Player 1", icon: '<i class="fa-solid fa-user"></i>', type: "action", action: "player_option", playerId: 1 },
+                    { name: "Player 2", icon: '<i class="fa-solid fa-user"></i>', type: "action", action: "player_option", playerId: 2 }
+                ]
+            },
+            combat: { title: 'COMBAT/WEAPONS', items: [] }, // قم بملء هذه القوائم
+            visual: { title: 'VISUAL OPTIONS', items: [] },
+            vehicle: { title: 'VEHICLE OPTIONS', items: [] },
+            misc: { title: 'MISCELLANEOUS', items: [] },
+            destructive: { title: 'DESTRUCTIVE TOOLS', items: [] },
+            triggers: { title: 'EVENT TRIGGERS', items: [] },
+            settings: { title: 'SETTINGS', items: [] }
         };
 
-        // وظائف القائمة الأساسية
-        function renderMenuItems(menuType) {
-            const currentMenuData = menuData[menuType];
-            let itemsHtml = '<div class="highlight-bar"></div>'; 
+        // ===================================
+        // وظائف التواصل مع Lua (NUI Callbacks)
+        // ===================================
 
-            currentMenuData.items.forEach((item, index) => {
-                if (item.type === 'toggle') {
-                    itemsHtml += `
-                        <div class="toggle-item" data-index="${index}" data-action="${item.action}">
-                            <div class="toggle-text">${item.name}</div>
-                            <div class="toggle-switch ${item.checked ? 'on' : 'off'}"></div>
-                        </div>
-                    `;
+        function sendNuiMessage(action, data = {}) {
+            if (typeof (GetParentResourceName) !== 'undefined') {
+                fetch(`https://${GetParentResourceName()}/${action}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                    },
+                    body: JSON.stringify(data)
+                }).then(resp => resp.json()).then(resp => {
+                    // console.log("NUI Response:", resp);
+                });
+            }
+        }
+
+        // إرسال حالة التاب الحالي إلى Lua
+        function updateLuaCurrentState() {
+            sendNuiMessage('updateCurrentState', {
+                tab: currentMenuType,
+                option: getCurrentMenuItemName() // إرسال اسم الخيار المحدد حالياً
+            });
+        }
+
+        // ===================================
+        // وظائف التعامل مع القائمة
+        // ===================================
+
+        function renderMenu(menuKey) {
+            const menu = menuData[menuKey];
+            if (!menu) {
+                console.error("Menu not found:", menuKey);
+                return;
+            }
+
+            // تحديث العنوان
+            headerText.textContent = menu.title;
+
+            // مسح العناصر القديمة
+            menuItemsContainer.innerHTML = '<div class="highlight-bar"></div>';
+            highlightBar = document.querySelector('.highlight-bar'); // إعادة الحصول على شريط التحديد
+
+            // إضافة زر "العودة" إذا لم تكن القائمة الرئيسية
+            if (menuKey !== 'main') {
+                const backItem = createMenuItem({ name: "Back", icon: '<i class="fa-solid fa-arrow-left"></i>', type: "back" });
+                menuItemsContainer.appendChild(backItem);
+            }
+
+            // إضافة عناصر القائمة
+            menu.items.forEach((item, index) => {
+                const menuItemElement = createMenuItem(item, index);
+                menuItemsContainer.appendChild(menuItemElement);
+            });
+
+            currentIndex = 0; // إعادة تعيين الفهرس عند تحميل قائمة جديدة
+            updateSelection();
+            updateCounter();
+            updateHighlightBar();
+
+            // تحديث حالة Lua بالتاب الجديد
+            updateLuaCurrentState();
+        }
+
+        function createMenuItem(item, index) {
+            const element = document.createElement('div');
+            element.classList.add(item.type === 'toggle' ? 'toggle-item' : 'menu-item');
+            element.setAttribute('data-index', index); // لتحديد الفهرس لاحقاً
+
+            if (item.type === 'back') {
+                element.classList.add('back-arrow-item');
+                element.innerHTML = `
+                    <div class="icon">${item.icon}</div>
+                    <div class="text">${item.name}</div>
+                `;
+                element.addEventListener('click', () => goBack());
+            } else if (item.type === 'toggle') {
+                element.innerHTML = `
+                    <div class="toggle-text">${item.name}</div>
+                    <div class="toggle-switch ${item.state ? 'on' : ''}" data-action="${item.action}"></div>
+                `;
+                element.addEventListener('click', () => toggleOption(item, element.querySelector('.toggle-switch')));
+            } else { // Submenu or action
+                element.innerHTML = `
+                    <div class="icon">${item.icon}</div>
+                    <div class="text">${item.name}</div>
+                    ${item.type === 'submenu' ? '<div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>' : ''}
+                `;
+                element.addEventListener('click', () => selectOption(item));
+            }
+            return element;
+        }
+
+        function updateSelection() {
+            const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
+            items.forEach((item, index) => {
+                if (index === currentIndex) {
+                    item.classList.add('selected');
                 } else {
-                    const itemClass = (item.action === 'back') ? 'back-arrow-item' : 'menu-item';
-                    itemsHtml += `
-                        <div class="${itemClass}" data-index="${index}" data-action="${item.action}">
-                            <div class="icon">${item.icon}</div>
-                            <div class="text">${item.name}</div>
-                            ${(item.action !== 'back') ? '<div class="arrow">»</div>' : ''}
-                        </div>
-                    `;
+                    item.classList.remove('selected');
                 }
             });
-            
-            menuItemsContainer.innerHTML = itemsHtml;
-            highlightBar = document.querySelector('.highlight-bar');
-            attachEventListeners();
+            updateHighlightBar();
+            updateCounter();
+            scrollIntoView(items[currentIndex]);
+            updateLuaCurrentState(); // تحديث Lua عند تغيير التحديد
         }
 
-        function attachEventListeners() {
-            const renderedItems = document.querySelectorAll('#menuItemsContainer .menu-item, #menuItemsContainer .back-arrow-item, #menuItemsContainer .toggle-item');
-            
-            renderedItems.forEach((itemElement, index) => {
-                // Mouse hover
-                itemElement.addEventListener('mouseenter', function() {
-                    updateSelection(index);
-                });
-
-                // Mouse click
-                itemElement.addEventListener('click', function() {
-                    handleItemSelection(index);
-                });
-            });
+        function updateHighlightBar() {
+            const selectedItem = menuItemsContainer.querySelector('.menu-item.selected, .toggle-item.selected, .back-arrow-item.selected');
+            if (selectedItem) {
+                highlightBar.style.top = selectedItem.offsetTop + 'px';
+            }
         }
 
-        function updateSelection(index) {
-            const currentItems = document.querySelectorAll('#menuItemsContainer .menu-item, #menuItemsContainer .back-arrow-item, #menuItemsContainer .toggle-item');
-            const totalItems = currentItems.length;
-
-            // إزالة التحديد السابق
-            if (currentItems[currentIndex]) {
-                currentItems[currentIndex].classList.remove('selected');
-            }
-            
-            // تحديد العنصر الجديد
-            currentIndex = Math.max(0, Math.min(index, totalItems - 1));
-
-            if (totalItems > 0 && currentIndex >= 0 && currentIndex < totalItems) {
-                currentItems[currentIndex].classList.add('selected');
-            }
-
-            // تحديث الـ highlight bar
-            if (highlightBar && totalItems > 0) {
-                const selectedElement = currentItems[currentIndex]; 
-                const topPosition = selectedElement.offsetTop; 
-                highlightBar.style.top = `${topPosition}px`; 
-                highlightBar.style.display = 'block';
-            }
-            
-            // تحديث العداد
+        function updateCounter() {
+            const totalItems = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item')).length;
             counterElement.textContent = `${currentIndex + 1}/${totalItems}`;
-            
-            // إرسال الحالة الحالية للـ Lua
-            const currentOption = menuData[currentMenuType].items[currentIndex];
-            if (currentOption) {
-                sendToLua('updateCurrentState', {
-                    tab: currentMenuType,
-                    option: currentOption.name,
-                    index: currentIndex
-                });
-            }
         }
 
-        function handleItemSelection(index) {
-            const selectedOption = menuData[currentMenuType].items[index];
-            if (!selectedOption) return;
+        function scrollIntoView(element) {
+            if (element) {
+                const containerRect = menuItemsContainer.getBoundingClientRect();
+                const elementRect = element.getBoundingClientRect();
 
-            updateSelection(index);
-
-            if (selectedOption.type === 'toggle') {
-                // Toggle switch
-                selectedOption.checked = !selectedOption.checked;
-                const toggleSwitch = document.querySelector(`[data-index="${index}"] .toggle-switch`);
-                if (toggleSwitch) {
-                    toggleSwitch.classList.toggle('on', selectedOption.checked);
-                    toggleSwitch.classList.toggle('off', !selectedOption.checked);
+                if (elementRect.bottom > containerRect.bottom) {
+                    menuItemsContainer.scrollTop += elementRect.bottom - containerRect.bottom;
+                } else if (elementRect.top < containerRect.top) {
+                    menuItemsContainer.scrollTop -= containerRect.top - elementRect.top;
                 }
+            }
+        }
 
-                // إرسال للـ Lua
-                sendToLua('toggleAction', {
-                    action: selectedOption.action,
-                    state: selectedOption.checked,
-                    name: selectedOption.name
-                });
+        function getCurrentMenuItem() {
+            const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
+            return items[currentIndex];
+        }
 
-                // إشعار
-                showNotification(
-                    selectedOption.checked ? `${selectedOption.name} Activated` : `${selectedOption.name} Deactivated`,
-                    selectedOption.checked ? `${selectedOption.name} mode enabled.` : `${selectedOption.name} mode disabled.`,
-                    selectedOption.checked ? '<i class="fa-solid fa-toggle-on"></i>' : '<i class="fa-solid fa-toggle-off"></i>'
-                );
+        function getCurrentMenuItemData() {
+            const menu = menuData[currentMenuType];
+            const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
+            const selectedElement = items[currentIndex];
 
-            } else if (selectedOption.action === 'back') {
-                navigateBack();
-            } else if (selectedOption.action === 'self') {
-                navigateToMenu('self');
+            if (selectedElement && selectedElement.classList.contains('back-arrow-item')) {
+                return { type: "back", name: "Back" }; // بيانات لزر العودة
             } else {
-                // إرسال للـ Lua
-                sendToLua('menuSelected', {
-                    action: selectedOption.action,
-                    index: index,
-                    menu: currentMenuType,
-                    name: selectedOption.name
-                });
-
-                showNotification('Action Performed', `${selectedOption.name} was selected.`);
+                // إذا كان هناك زر العودة، فإن الـ index الحقيقي للبيانات يقل 1
+                const actualIndex = (currentMenuType !== 'main' ? currentIndex - 1 : currentIndex);
+                return menu.items[actualIndex];
             }
         }
 
-        function navigateToMenu(menuType) {
-            if (menuData[menuType]) {
-                currentMenuType = menuType;
-                headerText.textContent = menuData[menuType].title;
-                renderMenuItems(currentMenuType);
-                updateSelection(0);
-                
-                // إرسال تحديث التبويب للـ Lua
-                sendToLua('updateCurrentState', {
-                    tab: currentMenuType,
-                    option: menuData[menuType].items[0].name,
-                    index: 0
-                });
+        function getCurrentMenuItemName() {
+            const item = getCurrentMenuItemData();
+            return item ? item.name : "None";
+        }
+
+        // ===================================
+        // معالجة الأحداث (النقر، لوحة المفاتيح)
+        // ===================================
+
+        function selectOption(item) {
+            if (item.type === "submenu") {
+                menuHistory.push(currentMenuType); // حفظ القائمة الحالية قبل الانتقال
+                currentMenuType = item.target;
+                renderMenu(currentMenuType);
+            } else if (item.type === "action") {
+                sendNuiMessage('menuSelected', { action: item.action, name: item.name });
+                showNotification("Action Executed", `${item.name} activated!`, "info");
             }
         }
 
-        function navigateBack() {
-            if (currentMenuType === 'self') {
-                currentMenuType = 'main';
-                headerText.textContent = menuData.main.title;
-                renderMenuItems(currentMenuType);
-                const selfIndex = menuData.main.items.findIndex(item => item.action === 'self');
-                updateSelection(selfIndex >= 0 ? selfIndex : 0);
-                
-                // إرسال تحديث التبويب للـ Lua
-                sendToLua('updateCurrentState', {
-                    tab: currentMenuType,
-                    option: menuData.main.items[selfIndex >= 0 ? selfIndex : 0].name,
-                    index: selfIndex >= 0 ? selfIndex : 0
-                });
+        function toggleOption(item, toggleSwitchElement) {
+            item.state = !item.state; // تبديل الحالة
+            toggleSwitchElement.classList.toggle('on', item.state); // تحديث الـ CSS
+
+            sendNuiMessage('toggleAction', {
+                action: item.action,
+                name: item.name,
+                state: item.state
+            });
+            showNotification(item.name, `${item.name} ${item.state ? 'Enabled' : 'Disabled'}`, item.state ? "success" : "error");
+        }
+
+        function goBack() {
+            if (menuHistory.length > 0) {
+                currentMenuType = menuHistory.pop(); // العودة للقائمة السابقة
+                renderMenu(currentMenuType);
+            } else {
+                // إذا كنت في القائمة الرئيسية وليس هناك تاريخ، يمكنك إغلاق القائمة
+                sendNuiMessage('hideMenu');
             }
         }
 
-        function showNotification(title, message, iconHtml = '<i class="fa-solid fa-info-circle"></i>') {
+        // استقبال الرسائل من Lua
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            if (data.type === "showMenu") {
+                menuContainer.classList.remove('hidden');
+                isMenuVisible = true;
+                menuContainer.focus(); // لتمكين استقبال أحداث لوحة المفاتيح
+
+                // إذا أرسل Lua تابًا مبدئيًا عند الفتح، استخدمه
+                if (data.initialTab && menuData[data.initialTab]) {
+                    currentMenuType = data.initialTab;
+                }
+                renderMenu(currentMenuType);
+            } else if (data.type === "hideMenu") {
+                menuContainer.classList.add('hidden');
+                isMenuVisible = false;
+            } else if (data.type === "keyPressed" && isMenuVisible) {
+                handleKeyPress(data.key);
+            }
+        });
+
+        // معالجة ضغطات المفاتيح (للتنقل بالأسهم)
+        function handleKeyPress(key) {
+            const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
+            const totalItems = items.length;
+
+            if (totalItems === 0) return;
+
+            if (key === "ArrowUp") {
+                currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+            } else if (key === "ArrowDown") {
+                currentIndex = (currentIndex + 1) % totalItems;
+            } else if (key === "Enter") {
+                const selectedItemElement = getCurrentMenuItem();
+                selectedItemElement.click(); // محاكاة النقر
+            } else if (key === "Backspace") {
+                goBack();
+            }
+            updateSelection();
+        }
+
+        // السماح بالتحكم بالماوس أيضًا
+        menuItemsContainer.addEventListener('mouseover', function(event) {
+            const itemElement = event.target.closest('.menu-item, .toggle-item, .back-arrow-item');
+            if (itemElement) {
+                const index = parseInt(itemElement.getAttribute('data-index'));
+                if (!isNaN(index) && index !== currentIndex) {
+                    currentIndex = index;
+                    updateSelection();
+                }
+            }
+        });
+
+        // ===================================
+        // نظام الإشعارات (Notifications)
+        // ===================================
+
+        function showNotification(title, message, type = "info", duration = 4000) {
             const notification = document.createElement('div');
-            notification.className = 'notification';
+            notification.classList.add('notification');
+            if (type === "success") notification.style.borderColor = "rgba(0, 255, 0, 0.4)";
+            if (type === "error") notification.style.borderColor = "rgba(255, 0, 0, 0.4)";
 
             notification.innerHTML = `
                 <div class="notification-content">
-                    <div class="notification-icon">${iconHtml}</div> 
+                    <div class="notification-icon">
+                        ${type === "success" ? '<i class="fa-solid fa-check-circle"></i>' :
+                           type === "error" ? '<i class="fa-solid fa-times-circle"></i>' :
+                           '<i class="fa-solid fa-info-circle"></i>'}
+                    </div>
                     <div class="notification-text">
                         <div class="notification-title">${title}</div>
                         <div class="notification-message">${message}</div>
@@ -608,139 +733,28 @@
             `;
 
             notificationContainer.appendChild(notification);
-            
+
+            const timerBar = notification.querySelector('.notification-timer');
+            timerBar.style.animationDuration = `${duration / 1000}s`;
+
             setTimeout(() => {
                 notification.classList.add('fade-out');
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 250); 
-            }, 3000); 
+                notification.addEventListener('animationend', () => {
+                    notification.remove();
+                });
+            }, duration - 250); // تبدأ الفيد أوت قبل انتهاء المؤقت بقليل
         }
 
-        function sendToLua(eventName, data) {
-            try {
-                if (typeof GetParentResourceName !== 'undefined') {
-                    fetch(`https://${GetParentResourceName()}/${eventName}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-                        body: JSON.stringify(data)
-                    }).catch(error => console.error(`Error sending ${eventName}:`, error));
-                } else {
-                    console.log(`[DEBUG] ${eventName}:`, data);
-                }
-            } catch (error) {
-                console.error('Error in sendToLua:', error);
-            }
-        }
-
-        function showMenu() {
-            menuContainer.classList.remove('hidden');
-            menuContainer.focus(); // التركيز للحصول على keyboard events
-            isMenuVisible = true;
-            renderMenuItems(currentMenuType);
-            updateSelection(currentIndex);
-        }
-
-        function hideMenu() {
-            menuContainer.classList.add('hidden');
-            isMenuVisible = false;
-        }
-
-        // التحكم بالكيبورد المباشر من HTML
-        document.addEventListener('keydown', function(e) {
-            if (!isMenuVisible) return;
-
-            const currentItems = document.querySelectorAll('#menuItemsContainer .menu-item, #menuItemsContainer .back-arrow-item, #menuItemsContainer .toggle-item');
-            const totalItems = currentItems.length;
-
-            switch(e.key) {
-                case 'ArrowUp':
-                    e.preventDefault();
-                    if (totalItems > 0) {
-                        currentIndex = (currentIndex - 1 + totalItems) % totalItems;
-                        updateSelection(currentIndex);
-                    }
-                    break;
-                    
-                case 'ArrowDown':
-                    e.preventDefault();
-                    if (totalItems > 0) {
-                        currentIndex = (currentIndex + 1) % totalItems;
-                        updateSelection(currentIndex);
-                    }
-                    break;
-                    
-                case 'Enter':
-                    e.preventDefault();
-                    handleItemSelection(currentIndex);
-                    break;
-
-                case 'Backspace':
-                case 'Escape':
-                    e.preventDefault();
-                    if (currentMenuType !== 'main') {
-                        navigateBack();
-                    } else {
-                        sendToLua('hideMenu', {});
-                    }
-                    break;
-            }
+        // تهيئة القائمة عند التحميل الأولي
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMenu(currentMenuType); // عرض القائمة الرئيسية عند التحميل
+            // أرسل رسالة مبدئية إلى Lua لتعيين الحالة
+            sendNuiMessage('updateCurrentState', { tab: currentMenuType, option: getCurrentMenuItemName() });
         });
 
-        // استقبال الرسائل من Lua
-        window.addEventListener('message', function(event) {
-            const data = event.data;
-            try {
-                switch(data.type) {
-                    case 'showMenu':
-                        showMenu();
-                        break;
-                        
-                    case 'hideMenu':
-                        hideMenu();
-                        break;
-                        
-                    case 'updateSelection':
-                        if (data.currentIndex !== undefined) {
-                            updateSelection(data.currentIndex);
-                        }
-                        break;
-                        
-                    case 'keyPressed':
-                        // محاكاة ضغط المفاتيح
-                        const keyEvent = new KeyboardEvent('keydown', { key: data.key });
-                        document.dispatchEvent(keyEvent);
-                        break;
-                        
-                    case 'showCustomNotification':
-                        showNotification(data.title || 'Notification', data.message || 'Custom message.', data.iconHtml);
-                        break;
-                        
-                    case 'setHeaderImage':
-                        const header = document.getElementById('menuHeader');
-                        if (header && data.imageUrl) {
-                            header.style.backgroundImage = `url('${data.imageUrl}')`;
-                        }
-                        break;
-                }
-            } catch (error) {
-                console.error('Error processing message from FiveM:', error);
-            }
-        });
-
-        // تهيئة القائمة
-        document.addEventListener('DOMContentLoaded', function() {
-            renderMenuItems('main');
-            updateSelection(0);
-            
-            // تطبيق الصورة الافتراضية
-            const header = document.getElementById('menuHeader');
-            if (header) {
-                header.style.backgroundImage = `url('${bannerImageUrl}')`;
-            }
-        });
+        // الاستماع لرسالة من Lua لتهيئة القائمة بالتاب الافتراضي عند الفتح
+        // هذا يسمح لـ Lua بتحديد أي تاب يجب عرضه عند الفتح لأول مرة.
+        // (تم نقل جزء معالجة initialTab إلى `window.addEventListener('message')` أعلاه)
     </script>
 </body>
 </html>
