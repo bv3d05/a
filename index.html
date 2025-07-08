@@ -1,550 +1,833 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura2 Menu - HTML Controlled</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <title>Aura HTML Controlled Menu</title>
     <style>
-        /* Your existing CSS here */
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
-        html, body { width: 100%; height: 100%; background-color: transparent !important; overflow: hidden; font-family: 'Roboto', sans-serif; display: flex; justify-content: center; align-items: center; }
-        .menu-container { width: 387px; height: 520px; background: rgba(0, 0, 0, 0.6); border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 0 8px rgba(255, 255, 0, 0.08); overflow: hidden; position: relative; display: flex; flex-direction: column; opacity: 1; outline: none; }
-        .menu-header { height: 137px; background: linear-gradient(135deg, rgba(255, 255, 0, 0.95) 0%, rgba(200, 200, 0, 0.95) 100%); position: relative; background-size: cover; background-position: center top; background-repeat: no-repeat; border-top-left-radius: 7px; border-top-right-radius: 7px; box-shadow: inset 0 -2px 6px rgba(255, 255, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.2); }
-        .header-home-text { position: absolute; bottom: 0; left: 0; right: 0; background: #000000; color: #ffffff; font-family: 'Roboto', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; text-align: center; padding: 8px; border-radius: 0; box-shadow: none; }
-        .menu-items { padding: 4px 0; height: calc(100% - 137px - 32px); overflow-y: scroll; position: relative; display: flex; flex-direction: column; }
-        .menu-items::-webkit-scrollbar { display: none; }
-        .menu-item, .back-arrow-item { display: flex; align-items: center; padding: 5px 12px; margin: 0; cursor: pointer; position: relative; min-height: 38px; transition: none; z-index: 2; }
-        .menu-item:hover, .back-arrow-item:hover { background: transparent; }
-        .menu-item.selected, .back-arrow-item.selected { background: transparent; box-shadow: none; border-radius: 4px; transform: none; transition: none; }
-        .highlight-bar { position: absolute; left: 0; width: 100%; height: 38px; background: rgba(255, 255, 0, 0.08); border-radius: 3px; z-index: 1; transition: top 0.2s ease-out; }
-        .menu-item .icon, .back-arrow-item .icon { width: 20px; height: 20px; margin-right: 10px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #d0d0d0; transition: none; position: relative; z-index: 2; }
-        .menu-item.selected .icon, .back-arrow-item.selected .icon { color: rgb(255, 255, 0); }
-        .menu-item .text, .back-arrow-item .text { flex: 1; font-family: 'Roboto', sans-serif; font-size: 13px; font-weight: 500; color: #f0f0f0; transition: none; position: relative; z-index: 2; }
-        .menu-item.selected .text, .back-arrow-item.selected .text { color: rgb(255, 255, 0); }
-        .menu-item .arrow { position: relative; z-index: 2; color: #d0d0d0; transition: none; }
-        .menu-item.selected .arrow { color: rgb(255, 255, 0); }
-        .toggle-item { display: flex; align-items: center; justify-content: space-between; padding: 5px 12px; margin: 0; cursor: pointer; position: relative; min-height: 38px; transition: none; z-index: 2; }
-        .toggle-item:hover { background: transparent; }
-        .toggle-item.selected .toggle-text { color: rgb(255, 255, 0); }
-        .toggle-item .toggle-text { flex: 1; font-family: 'Roboto', sans-serif; font-size: 13px; font-weight: 500; color: #f0f0f0; }
-        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 22px; border-radius: 11px; background-color: rgba(100, 100, 100, 0.8); transition: background-color 0.2s ease-out, box-shadow 0.2s ease-out; box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.4); flex-shrink: 0; }
-        .toggle-switch::before { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background-color: #fff; top: 2px; left: 2px; transition: transform 0.2s ease-out, background-color 0.2s ease-out; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); }
-        .toggle-switch.on { background-color: rgb(255, 255, 0); box-shadow: 0 0 8px rgba(255, 255, 0, 0.6), 0 0 10px rgba(255, 255, 0, 0.4); }
-        .toggle-switch.on::before { transform: translateX(22px); background-color: #fff; }
-        .menu-footer { background: rgba(8, 8, 8, 0.7); padding: 8px 16px; font-family: 'Roboto', sans-serif; font-size: 11px; color: #b0b0b0; border-top: 1px solid rgba(255, 255, 0, 0.25); display: flex; justify-content: space-between; align-items: center; min-height: 32px; border-bottom-left-radius: 7px; border-bottom-right-radius: 7px; }
-        .menu-footer .version { color: #b0b0b0; font-weight: 500; }
-        .menu-footer .counter { background: rgba(255, 255, 0, 0.1); border-radius: 6px; color: rgb(255, 255, 0); font-weight: 600; font-size: 11px; padding: 2px 5px; box-shadow: 0 1px 3px rgba(255, 255, 0, 0.2); }
-        .notification-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
-        .notification { background: rgba(25, 25, 25, 0.85); border: 1px solid rgba(255, 255, 0, 0.4); padding: 14px 18px; border-radius: 10px; min-width: 260px; max-width: 320px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05); display: flex; align-items: center; animation: notificationFadeIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; opacity: 0; transform: translateY(10px); }
-        .notification.fade-out { animation: notificationFadeOut 0.25s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards; }
-        @keyframes notificationFadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes notificationFadeOut { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(10px); } }
-        .notification-content { display: flex; align-items: center; flex: 1; }
-        .notification-icon { font-size: 18px; margin-right: 10px; color: rgb(255, 255, 0); text-shadow: none; animation: none; }
-        .notification-text { flex: 1; }
-        .notification-title { font-family: 'Roboto', sans-serif; font-size: 15px; font-weight: 700; color: #ffffff; margin-bottom: 2px; text-shadow: none; }
-        .notification-message { font-family: 'Roboto', sans-serif; font-size: 12px; font-weight: 500; color: #d1d5db; text-shadow: none; }
-        .notification-timer { width: 100%; height: 2px; background: rgb(255, 255, 0); position: absolute; bottom: 0; left: 0; animation: timerProgress 4s linear forwards; border-radius: 0 0 8px 8px; }
-        @keyframes timerProgress { 0% { width: 100%; } 100% { width: 0; } }
-        .menu-container.hidden { display: none !important; }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #ffffff; /* Default text color */
+        }
+
+        .menu-container {
+            width: 700px; /* Wider to accommodate more content */
+            max-height: 90vh; /* Max height to prevent overflow */
+            background-color: rgba(29, 31, 33, 0.95); /* Darker, slightly transparent background */
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* For smooth transitions and scroll */
+            border: 1px solid rgba(44, 48, 52, 0.8);
+            transform: scale(0.9); /* Slightly smaller by default */
+            opacity: 0;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+
+        .menu-container.show {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .menu-header {
+            background: linear-gradient(90deg, #00bcd4 0%, #007bb2 100%); /* Blue gradient */
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 10;
+        }
+
+        .menu-header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            color: #fff;
+        }
+
+        .menu-tabs {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            background-color: rgba(35, 39, 42, 0.9); /* Slightly lighter tab background */
+            border-bottom: 1px solid rgba(44, 48, 52, 0.8);
+        }
+
+        .menu-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.6);
+            transition: color 0.2s ease, background-color 0.2s ease;
+            border-radius: 8px; /* Rounded tabs */
+        }
+
+        .menu-tab:hover {
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-tab.active {
+            color: #00bcd4; /* Active tab color */
+            background-color: rgba(0, 0, 0, 0.2);
+            font-weight: 700;
+        }
+
+        .menu-content {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto; /* Scrollable content */
+            scrollbar-width: thin;
+            scrollbar-color: #00bcd4 #3b4249;
+        }
+
+        .menu-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .menu-content::-webkit-scrollbar-track {
+            background: #3b4249;
+            border-radius: 10px;
+        }
+
+        .menu-content::-webkit-scrollbar-thumb {
+            background-color: #00bcd4;
+            border-radius: 10px;
+            border: 2px solid #3b4249;
+        }
+
+        .menu-category {
+            display: none; /* Hide all categories by default */
+        }
+
+        .menu-category.active {
+            display: block; /* Show active category */
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            background-color: rgba(44, 48, 52, 0.7); /* Item background */
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(58, 63, 68, 0.8); /* Darker on hover */
+            transform: translateY(-2px);
+        }
+
+        .menu-item.selected {
+            background-color: #00bcd4; /* Selected item highlight */
+            color: #fff;
+            transform: scale(1.02);
+            box-shadow: 0 4px 10px rgba(0, 188, 212, 0.3);
+        }
+
+        .menu-item-label {
+            font-size: 17px;
+            font-weight: 400;
+            color: #fff; /* White text for labels */
+        }
+
+        .menu-item-status {
+            font-size: 15px;
+            font-weight: bold;
+            color: #00bcd4; /* Light blue for status */
+        }
+
+        /* Toggle Switch Styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #00bcd4;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #00bcd4;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(20px);
+            -ms-transform: translateX(20px);
+            transform: translateX(20px);
+        }
+
+        /* NEW: SkyDive Specific Styles (from previous response) */
+        .menu-item.skydive-toggle-item,
+        .menu-item.skydive-speed-slider,
+        .menu-item.skydive-keybind {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .menu-item.skydive-toggle-item:hover,
+        .menu-item.skydive-speed-slider:hover,
+        .menu-item.skydive-keybind:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .skydive-label {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .skydive-value {
+            color: #00bcd4; /* Light blue */
+            font-weight: bold;
+        }
+
+        /* Toggle Switch Styles (re-using if you have one, or define new) */
+        .skydive-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .skydive-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .skydive-slider-round {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .skydive-slider-round:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .skydive-slider-round {
+            background-color: #00bcd4;
+        }
+
+        input:focus + .skydive-slider-round {
+            box-shadow: 0 0 1px #00bcd4;
+        }
+
+        input:checked + .skydive-slider-round:before {
+            -webkit-transform: translateX(20px);
+            -ms-transform: translateX(20px);
+            transform: translateX(20px);
+        }
+
+        /* Slider Input Styles */
+        .skydive-slider-input {
+            width: 100px; /* Adjust width as needed */
+            margin-left: 10px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            height: 8px;
+            border-radius: 5px;
+        }
+
+        .skydive-slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #00bcd4;
+            cursor: pointer;
+        }
+
+        .skydive-slider-input::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #00bcd4;
+            cursor: pointer;
+        }
+
+        .skydive-key-display {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: #fff;
+            font-weight: bold;
+            min-width: 50px; /* To prevent flickering */
+            text-align: center;
+        }
+
+        .keybind-input-active {
+            border: 2px solid #00bcd4;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { box-shadow: 0 0 0px #00bcd4; }
+            to { box-shadow: 0 0 10px #00bcd4; }
+        }
+
     </style>
 </head>
 <body>
-    <div class="menu-container hidden" id="mainMenu" tabindex="0">
-        <div class="menu-header" id="menuHeader">
-            <div class="header-home-text" id="headerText">HOME</div>
+    <div class="menu-container" id="menuContainer">
+        <div class="menu-header">
+            <h1>AURA HTML MENU</h1>
         </div>
 
-        <div class="menu-items" id="menuItemsContainer">
-            <div class="highlight-bar"></div>
+        <div class="menu-tabs">
+            <div class="menu-tab active" data-tab="main">Self Options</div>
+            <div class="menu-tab" data-tab="online">Online</div>
+            <div class="menu-tab" data-tab="combat">Combat</div>
+            <div class="menu-tab" data-tab="visual">Visual</div>
+            <div class="menu-tab" data-tab="vehicle">Vehicle</div>
+            <div class="menu-tab" data-tab="misc">Misc</div>
+            <div class="menu-tab" data-tab="destructive">Destructive</div>
+            <div class="menu-tab" data-tab="triggers">Event Triggers</div>
+            <div class="menu-tab" data-tab="settings">Settings</div>
         </div>
 
-        <div class="menu-footer">
-            <span class="version">Version: HTML Controlled | 24hrs ago</span>
-            <span class="counter" id="counter">1/9</span>
+        <div class="menu-content">
+            <div class="menu-category active" id="main-tab">
+                <div class="menu-item" data-action="fastrun_toggle">
+                    <span class="menu-item-label">Fast Run</span>
+                    <label class="switch">
+                        <input type="checkbox" id="fastrun-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="menu-item" data-action="noclip_toggle">
+                    <span class="menu-item-label">Noclip</span>
+                    <label class="switch">
+                        <input type="checkbox" id="noclip-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="menu-item" data-action="godmode_toggle">
+                    <span class="menu-item-label">Godmode</span>
+                    <label class="switch">
+                        <input type="checkbox" id="godmode-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <hr style="border: 0; border-top: 1px dashed rgba(255,255,255,0.1); margin: 15px 0;">
+                <div class="menu-item skydive-toggle-item">
+                    <span class="skydive-label">SkyDive Toggle</span>
+                    <label class="skydive-switch">
+                        <input type="checkbox" id="skydiveToggleCheckbox">
+                        <span class="skydive-slider-round"></span>
+                    </label>
+                </div>
+
+                <div class="menu-item skydive-speed-slider">
+                    <span class="skydive-label">SkyDive Speed</span>
+                    <input type="range" min="1" max="500" value="10" class="skydive-slider-input" id="skydiveSpeedSlider">
+                    <span class="skydive-value" id="skydiveSpeedValue">10</span>
+                </div>
+
+                <div class="menu-item skydive-keybind">
+                    <span class="skydive-label">SkyDive Keybind</span>
+                    <div class="skydive-key-display" id="skydiveKeyDisplay">None</div>
+                </div>
+            </div>
+
+            <div class="menu-category" id="online-tab">
+                <div class="menu-item" data-action="online">
+                    <span class="menu-item-label">Online Option 1</span>
+                    <span class="menu-item-status">Enabled</span>
+                </div>
+                <div class="menu-item" data-action="online">
+                    <span class="menu-item-label">Online Option 2</span>
+                    <span class="menu-item-status">Disabled</span>
+                </div>
+            </div>
+
+            <div class="menu-category" id="combat-tab">
+                <div class="menu-item" data-action="combat">
+                    <span class="menu-item-label">Combat Option 1</span>
+                    <span class="menu-item-status">Ready</span>
+                </div>
+            </div>
+
+            <div class="menu-category" id="visual-tab">
+                <div class="menu-item" data-action="visual">
+                    <span class="menu-item-label">Visual Option 1</span>
+                    <span class="menu-item-status">Active</span>
+                </div>
+            </div>
+
+            <div class="menu-category" id="vehicle-tab">
+                <div class="menu-item" data-action="vehicle">
+                    <span class="menu-item-label">Vehicle Option 1</span>
+                    <span class="menu-item-status">Available</span>
+                </div>
+            </div>
+
+            <div class="menu-category" id="misc-tab">
+                <div class="menu-item" data-action="misc">
+                    <span class="menu-item-label">Misc Option 1</span>
+                    <span class="menu-item-status">Info</span>
+                </div>
+            </div>
+
+            <div class="menu-category" id="destructive-tab">
+                <div class="menu-item" data-action="destructive">
+                    <span class="menu-item-label">Destructive Option 1</span>
+                    <span class="menu-item-status">Warning</span>
+                </div>
+            </div>
+
+            <div class="menu-category" id="triggers-tab">
+                <div class="menu-item" data-action="triggers">
+                    <span class="menu-item-label">Trigger 1</span>
+                    <span class="menu-item-status">Execute</span>
+                </div>
+            </div>
+
+            <div class="menu-category" id="settings-tab">
+                <div class="menu-item" data-action="settings">
+                    <span class="menu-item-label">Settings Option 1</span>
+                    <span class="menu-item-status">Adjust</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="notification-container" id="notificationContainer"></div>
-
     <script>
-        const bannerImageUrl = 'https://media.discordapp.net/attachments/1385473748068728922/1385879507289899148/Untitled12_20250621101005.png?ex=6857ac5e&is=68565ade&hm=d6b1c32143168757f493fcfe79cb7dad4849f8b56e7ca841ad23888219fe491e&=&format=webp&quality=lossless';
+        // Resource Name - MUST MATCH YOUR FXMANIFEST.LUA / MachoInjectResource NAME
+        const resourceName = 'basic-gamemode'; // <--- تأكد أن هذا مطابق لاسم موردك!
 
-        let currentIndex = 0;
-        let currentMenuType = 'main';
-        let isMenuVisible = false;
-        const menuHistory = [];
+        const menuContainer = document.getElementById('menuContainer');
+        const tabs = document.querySelectorAll('.menu-tab');
+        const categories = document.querySelectorAll('.menu-category');
+        const menuItems = document.querySelectorAll('.menu-item');
 
-        const menuContainer = document.getElementById('mainMenu');
-        const headerText = document.getElementById('headerText');
-        const menuItemsContainer = document.getElementById('menuItemsContainer');
-        let highlightBar = document.querySelector('.highlight-bar');
-        const counterElement = document.getElementById('counter');
-        const notificationContainer = document.getElementById('notificationContainer');
-        const menuHeader = document.getElementById('menuHeader');
+        let currentActiveTab = 'main'; // Default active tab ID
+        let currentSelectedItem = null; // Currently selected menu item for keyboard navigation
 
-        menuHeader.style.backgroundImage = `url(${bannerImageUrl})`;
+        // ======================================
+        // NUI Communication Functions
+        // ======================================
 
-        const menuData = {
-            main: {
-                title: 'HOME',
-                items: [
-                    { name: "Self Options", icon: '<i class="fa-solid fa-user"></i>', type: "submenu", target: "self" },
-                    { name: "Online Options", icon: '<i class="fa-solid fa-desktop"></i>', type: "submenu", target: "online" },
-                    { name: "Combat/Weapons", icon: '<i class="fa-solid fa-crosshairs"></i>', type: "submenu", target: "combat" },
-                    { name: "Visual Options", icon: '<i class="fa-solid fa-eye"></i>', type: "submenu", target: "visual" },
-                    { name: "Vehicle Options", icon: '<i class="fa-solid fa-car"></i>', type: "submenu", target: "vehicle" },
-                    { name: "Miscellaneous", icon: '<i class="fa-solid fa-folder-open"></i>', type: "submenu", target: "misc" },
-                    { name: "Destructive Tools", icon: '<i class="fa-solid fa-bomb"></i>', type: "submenu", target: "destructive" },
-                    { name: "Event Triggers", icon: '<i class="fa-solid fa-bolt"></i>', type: "submenu", target: "triggers" },
-                    { name: "Settings", icon: '<i class="fa-solid fa-gear"></i>', type: "submenu", target: "settings" }
-                ]
-            },
-            self: {
-                title: 'SELF OPTIONS',
-                items: [
-                    { name: "Enable Fast Run", icon: '<i class="fa-solid fa-person-running"></i>', type: "toggle", action: "fastrun_toggle", state: false },
-                    { name: "Enable Noclip", icon: '<i class="fa-solid fa-ghost"></i>', type: "toggle", action: "noclip_toggle", state: false },
-                    { name: "Enable Godmode", icon: '<i class="fa-solid fa-shield-halved"></i>', type: "toggle", action: "godmode_toggle", state: false },
-                    { name: "Heal Player", icon: '<i class="fa-solid fa-heart-pulse"></i>', type: "action", action: "heal_player" },
-                    { name: "Clean Player", icon: '<i class="fa-solid fa-broom"></i>', type: "action", action: "clean_player" }
-                ]
-            },
-            online: {
-                title: 'ONLINE OPTIONS',
-                items: [
-                    { name: "Players List", icon: '<i class="fa-solid fa-users"></i>', type: "submenu", target: "players_list" },
-                    { name: "Give All Weapons", icon: '<i class="fa-solid fa-gun"></i>', type: "action", action: "give_all_weapons" }
-                ]
-            },
-            players_list: {
-                title: 'PLAYERS LIST',
-                items: [
-                    { name: "Player 1", icon: '<i class="fa-solid fa-user"></i>', type: "action", action: "player_option", playerId: 1 },
-                    { name: "Player 2", icon: '<i class="fa-solid fa-user"></i>', type: "action", action: "player_option", playerId: 2 }
-                ]
-            },
-            combat: { title: 'COMBAT/WEAPONS', items: [] },
-            visual: { title: 'VISUAL OPTIONS', items: [] },
-            vehicle: { title: 'VEHICLE OPTIONS', items: [] },
-            misc: { title: 'MISCELLANEOUS', items: [] },
-            destructive: { title: 'DESTRUCTIVE TOOLS', items: [] },
-            triggers: { title: 'EVENT TRIGGERS', items: [] },
-            settings: { title: 'SETTINGS', items: [] }
-        };
-
-        // ===================================
-        // NEW: Advanced Debugger to send JS logs to Lua (F8 Console)
-        // ===================================
-        function sendNuiDebugMessage(type, message, data = {}) {
-            // قم بتغيير 'YOUR_RESOURCE_NAME_HERE' إلى اسم المجلد الفعلي لموردك
-            // مثال: const resourceName = 'aura_menu';
-            const resourceName = 'basic-gamemode'; // <--- غيّر هذا السطر هنا أيضاً
-
-            fetch(`https://${resourceName}/nuiDebugMessage`, {
+        function sendNuiDebugMessage(type, message, data = null) {
+            fetch(`http://${resourceName}/nuiDebugMessage`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                },
-                body: JSON.stringify({ type, message, data: JSON.stringify(data) }) // Stringify data for Lua
-            }).catch(error => {
-                // This error will not be sent to Lua, it's a direct JS error.
-                // If you see no debug messages in F8, this catch might be the only indicator.
-                console.error(`[HTML-DEBUG-SELF] Failed to send debug message:`, error);
-            });
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type, message, data })
+            }).catch(e => console.error("Error sending debug message:", e));
         }
-
-        // Override console functions to send logs to Lua
-        const originalConsoleLog = console.log;
-        const originalConsoleWarn = console.warn;
-        const originalConsoleError = console.error;
-
-        console.log = function(...args) {
-            originalConsoleLog(...args);
-            sendNuiDebugMessage('log', args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '));
-        };
-        console.warn = function(...args) {
-            originalConsoleWarn(...args);
-            sendNuiDebugMessage('warn', args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '));
-        };
-        console.error = function(...args) {
-            originalConsoleError(...args);
-            sendNuiDebugMessage('error', args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '));
-        };
-
-        // ===================================
-        // وظائف التواصل مع Lua (NUI Callbacks)
-        // ===================================
 
         function sendNuiMessage(action, data = {}) {
-            // قم بتغيير 'YOUR_RESOURCE_NAME_HERE' إلى اسم المجلد الفعلي لموردك
-            // مثال: const resourceName = 'aura_menu';
-            const resourceName = 'basic-gamemode'; // <--- غيّر هذا السطر
-
-            console.log(`[HTML] Attempting to send NUI message to resource: ${resourceName}, action: ${action}, Data:`, data);
-            
-            fetch(`https://${resourceName}/${action}`, {
+            fetch(`http://${resourceName}/${action}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
-            }).then(resp => {
-                if (resp.ok && resp.headers.get('Content-Type')?.includes('application/json')) {
-                    return resp.json();
-                } else {
-                    console.warn(`[HTML] Non-JSON response for ${action}: Status ${resp.status}, Text: ${resp.statusText}`);
-                    return {};
-                }
-            }).then(resp => {
-                console.log(`[HTML] NUI Response for ${action}:`, resp);
-            }).catch(error => {
-                console.error(`[HTML] Error sending NUI message ${action}:`, error);
-            });
+            }).catch(e => console.error("Error sending NUI message:", e));
         }
 
-        // إرسال حالة التاب الحالي إلى Lua
+        // Send current state to Lua to keep it updated with active tab/option
         function updateLuaCurrentState() {
-            try {
-                const currentItemName = getCurrentMenuItemName();
-                console.log(`[HTML] Preparing to update Lua state: Tab = ${currentMenuType}, Option = ${currentItemName}`);
-                sendNuiMessage('updateCurrentState', {
-                    tab: currentMenuType,
-                    option: currentItemName
-                });
-            } catch (e) {
-                console.error(`[HTML] Error in updateLuaCurrentState:`, e);
+            let optionLabel = "Menu Closed";
+            if (menuContainer.classList.contains('show')) {
+                if (currentSelectedItem) {
+                    const labelElement = currentSelectedItem.querySelector('.menu-item-label, .skydive-label');
+                    if (labelElement) {
+                        optionLabel = labelElement.textContent.trim();
+                    } else if (currentSelectedItem.classList.contains('skydive-speed-slider')) {
+                        optionLabel = `SkyDive Speed: ${document.getElementById('skydiveSpeedSlider').value}`;
+                    } else if (currentSelectedItem.classList.contains('skydive-keybind')) {
+                        optionLabel = `SkyDive Keybind: ${document.getElementById('skydiveKeyDisplay').textContent}`;
+                    }
+                } else {
+                    optionLabel = "No Option Selected"; // Or first option in active tab
+                }
+            }
+
+            sendNuiMessage('updateCurrentState', {
+                tab: currentActiveTab,
+                option: optionLabel
+            });
+            sendNuiDebugMessage('log', `[HTML] Preparing to update Lua state: Tab = ${currentActiveTab}, Option = ${optionLabel}`);
+        }
+
+        // ======================================
+        // Menu Visibility and Tab Switching
+        // ======================================
+
+        function showMenu() {
+            menuContainer.classList.add('show');
+            // Select the first item in the current active tab
+            selectMenuItem(categories[Array.from(tabs).findIndex(tab => tab.dataset.tab === currentActiveTab)].querySelector('.menu-item'));
+            updateLuaCurrentState(); // Send initial state on show
+        }
+
+        function hideMenu() {
+            menuContainer.classList.remove('show');
+            currentSelectedItem = null; // Deselect on hide
+            updateLuaCurrentState(); // Send updated state on hide
+        }
+
+        function switchTab(tabId) {
+            // Deactivate current tab and category
+            document.querySelector(`.menu-tab.active`)?.classList.remove('active');
+            document.querySelector(`.menu-category.active`)?.classList.remove('active');
+
+            // Activate new tab and category
+            const newTab = document.querySelector(`.menu-tab[data-tab="${tabId}"]`);
+            const newCategory = document.getElementById(`${tabId}-tab`);
+
+            if (newTab && newCategory) {
+                newTab.classList.add('active');
+                newCategory.classList.add('active');
+                currentActiveTab = tabId;
+                // Select first item in the new tab, or null if no items
+                selectMenuItem(newCategory.querySelector('.menu-item'));
+                sendNuiDebugMessage('log', `[HTML] Switched to tab: ${tabId}`);
+                updateLuaCurrentState(); // Update Lua about tab change
+            } else {
+                sendNuiDebugMessage('error', `[HTML] Failed to switch to tab: ${tabId}. Tab or category not found.`);
             }
         }
 
-        // ===================================
-        // وظائف التعامل مع القائمة
-        // ===================================
+        // ======================================
+        // Item Selection and Navigation (Keyboard)
+        // ======================================
 
-        function renderMenu(menuKey) {
-            console.log(`[HTML] Rendering menu: ${menuKey}`);
-            const menu = menuData[menuKey];
-            if (!menu) {
-                console.error("Menu not found:", menuKey);
+        function selectMenuItem(item) {
+            if (currentSelectedItem) {
+                currentSelectedItem.classList.remove('selected');
+            }
+            if (item) {
+                item.classList.add('selected');
+                currentSelectedItem = item;
+                // Scroll to item if it's not visible
+                item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                sendNuiDebugMessage('log', `[HTML] Selected menu item: ${item.querySelector('.menu-item-label, .skydive-label')?.textContent || item.dataset.action || item.className}`);
+                updateLuaCurrentState(); // Update Lua about option change
+            } else {
+                currentSelectedItem = null;
+            }
+        }
+
+        function navigateMenuItems(direction) {
+            const currentCategoryItems = Array.from(document.getElementById(`${currentActiveTab}-tab`).querySelectorAll('.menu-item'));
+            if (currentCategoryItems.length === 0) return;
+
+            let currentIndex = currentSelectedItem ? currentCategoryItems.indexOf(currentSelectedItem) : -1;
+            let nextIndex;
+
+            if (direction === 'down') {
+                nextIndex = (currentIndex + 1) % currentCategoryItems.length;
+            } else if (direction === 'up') {
+                nextIndex = (currentIndex - 1 + currentCategoryItems.length) % currentCategoryItems.length;
+            } else {
                 return;
             }
-
-            headerText.textContent = menu.title;
-            menuItemsContainer.innerHTML = '<div class="highlight-bar"></div>';
-            highlightBar = document.querySelector('.highlight-bar');
-
-            if (menuKey !== 'main') {
-                const backItem = createMenuItem({ name: "Back", icon: '<i class="fa-solid fa-arrow-left"></i>', type: "back" });
-                menuItemsContainer.appendChild(backItem);
-            }
-
-            menu.items.forEach((item, index) => {
-                const menuItemElement = createMenuItem(item, index);
-                menuItemsContainer.appendChild(menuItemElement);
-            });
-
-            currentIndex = 0;
-            updateSelection();
-            updateCounter();
-            updateHighlightBar();
+            selectMenuItem(currentCategoryItems[nextIndex]);
         }
 
-        function createMenuItem(item, index) {
-            const element = document.createElement('div');
-            element.classList.add(item.type === 'toggle' ? 'toggle-item' : 'menu-item');
-            element.setAttribute('data-index', index); 
+        function activateSelectedItem() {
+            if (!currentSelectedItem) return;
 
-            if (item.type === 'back') {
-                element.classList.add('back-arrow-item');
-                element.innerHTML = `
-                    <div class="icon">${item.icon}</div>
-                    <div class="text">${item.name}</div>
-                `;
-                element.addEventListener('click', () => {
-                    console.log("[HTML] Clicked 'Back' button.");
-                    goBack();
-                });
-            } else if (item.type === 'toggle') {
-                element.innerHTML = `
-                    <div class="toggle-text">${item.name}</div>
-                    <div class="toggle-switch ${item.state ? 'on' : ''}" data-action="${item.action}"></div>
-                `;
-                element.addEventListener('click', () => {
-                    console.log(`[HTML] Clicked toggle item: ${item.name}`);
-                    toggleOption(item, element.querySelector('.toggle-switch'));
-                });
-            } else { // Submenu or action
-                element.innerHTML = `
-                    <div class="icon">${item.icon}</div>
-                    <div class="text">${item.name}</div>
-                    ${item.type === 'submenu' ? '<div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>' : ''}
-                `;
-                element.addEventListener('click', () => {
-                    console.log(`[HTML] Clicked menu item: ${item.name}, Type: ${item.type}`);
-                    selectOption(item);
-                });
-            }
-            return element;
-        }
-
-        function updateSelection() {
-            try {
-                const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
-                items.forEach((item, index) => {
-                    if (index === currentIndex) {
-                        item.classList.add('selected');
-                    } else {
-                        item.classList.remove('selected');
-                    }
-                });
-                updateHighlightBar();
-                updateCounter();
-                scrollIntoView(items[currentIndex]);
-                console.log(`[HTML] Selection updated to index: ${currentIndex}, Item: ${getCurrentMenuItemName()}`);
-                updateLuaCurrentState(); // Critical call here
-            } catch (e) {
-                console.error(`[HTML] Error in updateSelection:`, e);
-            }
-        }
-
-        function updateHighlightBar() {
-            const selectedItem = menuItemsContainer.querySelector('.menu-item.selected, .toggle-item.selected, .back-arrow-item.selected');
-            if (selectedItem) {
-                highlightBar.style.top = selectedItem.offsetTop + 'px';
-            }
-        }
-
-        function updateCounter() {
-            const totalItems = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item')).length;
-            counterElement.textContent = `${currentIndex + 1}/${totalItems}`;
-        }
-
-        function scrollIntoView(element) {
-            if (element) {
-                const containerRect = menuItemsContainer.getBoundingClientRect();
-                const elementRect = element.getBoundingClientRect();
-
-                if (elementRect.bottom > containerRect.bottom) {
-                    menuItemsContainer.scrollTop += elementRect.bottom - containerRect.bottom;
-                } else if (elementRect.top < containerRect.top) {
-                    menuItemsContainer.scrollTop -= containerRect.top - elementRect.top;
-                }
-            }
-        }
-
-        function getCurrentMenuItem() {
-            const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
-            return items[currentIndex];
-        }
-
-        function getCurrentMenuItemData() {
-            try {
-                const menu = menuData[currentMenuType];
-                if (!menu || !menu.items) {
-                    console.error("[HTML] getCurrentMenuItemData: menuData or menu.items is undefined for type:", currentMenuType);
-                    return null;
-                }
-                const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
-                const selectedElement = items[currentIndex];
-
-                if (!selectedElement) {
-                    console.warn("[HTML] getCurrentMenuItemData: No selected element at current index:", currentIndex);
-                    return null;
-                }
-
-                if (selectedElement.classList.contains('back-arrow-item')) {
-                    return { type: "back", name: "Back" };
+            const action = currentSelectedItem.dataset.action;
+            // Handle specific item types
+            if (action) { // For generic toggles and selections
+                if (currentSelectedItem.querySelector('input[type="checkbox"]')) {
+                    const checkbox = currentSelectedItem.querySelector('input[type="checkbox"]');
+                    checkbox.checked = !checkbox.checked;
+                    // Trigger change event to activate its listener
+                    checkbox.dispatchEvent(new Event('change'));
                 } else {
-                    // Adjust for 'Back' button if it exists in the current menu and currentIndex > 0
-                    const actualIndex = (currentMenuType !== 'main' && items.some(el => el.classList.contains('back-arrow-item')) && currentIndex > 0) 
-                                      ? currentIndex - 1 
-                                      : currentIndex;
-                    
-                    if (actualIndex >= 0 && actualIndex < menu.items.length) {
-                        return menu.items[actualIndex];
-                    } else {
-                        console.error(`[HTML] getCurrentMenuItemData: Invalid actualIndex ${actualIndex} for menu type ${currentMenuType}. Menu items length: ${menu.items.length}`);
-                        return null;
-                    }
+                    sendNuiMessage('menuSelected', { action: action, name: currentSelectedItem.querySelector('.menu-item-label').textContent.trim() });
+                    sendNuiDebugMessage('log', `[HTML] Activated menu item: ${action}`);
                 }
-            } catch (e) {
-                console.error(`[HTML] Error in getCurrentMenuItemData:`, e);
-                return null;
+            } else if (currentSelectedItem.classList.contains('skydive-keybind')) {
+                // Manually trigger click event for keybind item
+                currentSelectedItem.click();
             }
+            // Sliders are adjusted with arrow keys, not Enter
         }
 
-        function getCurrentMenuItemName() {
-            const item = getCurrentMenuItemData();
-            return item ? item.name : "None";
-        }
+        // ======================================
+        // Event Listeners (NUI Messages from Lua)
+        // ======================================
 
-        // ===================================
-        // معالجة الأحداث (النقر، لوحة المفاتيح)
-        // ===================================
-
-        function selectOption(item) {
-            if (item.type === "submenu") {
-                console.log(`[HTML] Navigating to submenu: ${item.target}`);
-                menuHistory.push(currentMenuType);
-                currentMenuType = item.target;
-                renderMenu(currentMenuType); // This call triggers updateLuaCurrentState
-            } else if (item.type === "action") {
-                console.log(`[HTML] Executing action: ${item.action}`);
-                sendNuiMessage('menuSelected', { action: item.action, name: item.name });
-                showNotification("Action Executed", `${item.name} activated!`, "info");
-                updateLuaCurrentState(); // Update Lua state after an action, in case 'option' changes.
-            }
-        }
-
-        function toggleOption(item, toggleSwitchElement) {
-            item.state = !item.state;
-            toggleSwitchElement.classList.toggle('on', item.state);
-
-            console.log(`[HTML] Toggling option: ${item.name}, New state: ${item.state}`);
-            sendNuiMessage('toggleAction', {
-                action: item.action,
-                name: item.name,
-                state: item.state
-            });
-            showNotification(item.name, `${item.name} ${item.state ? 'Enabled' : 'Disabled'}`, item.state ? "success" : "error");
-            updateLuaCurrentState(); // Update Lua state after toggle
-        }
-
-        function goBack() {
-            console.log(`[HTML] Attempting to go back. History length: ${menuHistory.length}`);
-            if (menuHistory.length > 0) {
-                currentMenuType = menuHistory.pop();
-                renderMenu(currentMenuType); // This call triggers updateLuaCurrentState
-            } else {
-                console.log("[HTML] No history to go back. Hiding menu.");
-                sendNuiMessage('hideMenu');
-            }
-        }
-
-        // استقبال الرسائل من Lua
         window.addEventListener('message', function(event) {
-            const data = event.data;
-            console.log("[HTML] Received message from NUI:", data);
-            if (data.type === "showMenu") {
-                menuContainer.classList.remove('hidden');
-                isMenuVisible = true;
-                menuContainer.focus();
+            const item = event.data;
+            sendNuiDebugMessage('log', `[HTML] Received NUI message: Type = ${item.type}`, item);
 
-                if (data.initialTab && menuData[data.initialTab]) {
-                    currentMenuType = data.initialTab;
-                    console.log(`[HTML] Initial tab set from Lua: ${currentMenuType}`);
-                } else {
-                    console.log(`[HTML] No initial tab from Lua, using default: ${currentMenuType}`);
-                }
-                renderMenu(currentMenuType); // This will update Lua state
-            } else if (data.type === "hideMenu") {
-                menuContainer.classList.add('hidden');
-                isMenuVisible = false;
-                console.log("[HTML] Menu hidden.");
-            } else if (data.type === "keyPressed" && isMenuVisible) {
-                console.log(`[HTML] Key pressed event: ${data.key}`);
-                handleKeyPress(data.key);
-            }
-        });
+            if (item.type === "showMenu") {
+                showMenu();
+                // Initialize toggle states
+                document.getElementById('fastrun-toggle').checked = item.fastRunActive || false;
+                document.getElementById('noclip-toggle').checked = item.noclipActive || false;
+                document.getElementById('godmode-toggle').checked = item.godmodeActive || false;
 
-        function handleKeyPress(key) {
-            try {
-                const items = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
-                const totalItems = items.length;
-
-                if (totalItems === 0) {
-                    console.warn("[HTML] No items to navigate with keyboard.");
-                    return;
-                }
-
-                if (key === "ArrowUp") {
-                    currentIndex = (currentIndex - 1 + totalItems) % totalItems;
-                    console.log(`[HTML] ArrowUp - New index: ${currentIndex}`);
-                } else if (key === "ArrowDown") {
-                    currentIndex = (currentIndex + 1) % totalItems;
-                    console.log(`[HTML] ArrowDown - New index: ${currentIndex}`);
-                } else if (key === "Enter") {
-                    const selectedItemElement = getCurrentMenuItem();
-                    if (selectedItemElement) {
-                        console.log(`[HTML] Enter key pressed on: ${getCurrentMenuItemName()}`);
-                        selectedItemElement.click();
-                    }
-                } else if (key === "Backspace") {
-                    console.log("[HTML] Backspace key pressed.");
-                    goBack();
-                }
-                updateSelection(); // Critical call here, updates Lua state
-            } catch (e) {
-                console.error(`[HTML] Error in handleKeyPress:`, e);
-            }
-        }
-
-        menuItemsContainer.addEventListener('mouseover', function(event) {
-            try {
-                const itemElement = event.target.closest('.menu-item, .toggle-item, .back-arrow-item');
-                if (itemElement) {
-                    const allItems = Array.from(menuItemsContainer.children).filter(el => el.classList.contains('menu-item') || el.classList.contains('toggle-item') || el.classList.contains('back-arrow-item'));
-                    const clickedIndex = allItems.indexOf(itemElement);
+                // NEW: Initialize SkyDive UI state when menu opens
+                if (item.initialSkydiveState) {
+                    document.getElementById('skydiveToggleCheckbox').checked = item.initialSkydiveState.isEnabled;
+                    document.getElementById('skydiveSpeedSlider').value = item.initialSkydiveState.speed;
+                    document.getElementById('skydiveSpeedValue').textContent = item.initialSkydiveState.speed;
                     
-                    if (clickedIndex !== -1 && clickedIndex !== currentIndex) {
-                        currentIndex = clickedIndex;
-                        updateSelection(); // Critical call here, updates Lua state
-                        console.log(`[HTML] Mouseover - New index: ${currentIndex}, Item: ${getCurrentMenuItemName()}`);
-                    }
+                    const keyName = item.initialSkydiveState.keybind !== 0 ? 
+                                    FiveMKeyToName(item.initialSkydiveState.keybind) : "None";
+                    document.getElementById('skydiveKeyDisplay').textContent = keyName;
+                    sendNuiDebugMessage('log', `[HTML] Initialized SkyDive UI: Enabled=${item.initialSkydiveState.isEnabled}, Speed=${item.initialSkydiveState.speed}, Key=${keyName}`);
                 }
-            } catch (e) {
-                console.error(`[HTML] Error in mouseover event listener:`, e);
+            } else if (item.type === "hideMenu") {
+                hideMenu();
+            } else if (item.type === "keyPressed") {
+                // Keyboard navigation from Lua
+                if (item.key === "ArrowUp") {
+                    navigateMenuItems('up');
+                } else if (item.key === "ArrowDown") {
+                    navigateMenuItems('down');
+                } else if (item.key === "Enter") {
+                    activateSelectedItem();
+                } else if (item.key === "Backspace") {
+                    sendNuiMessage('hideMenu'); // Ask Lua to hide menu
+                }
+            } else if (item.type === "updateUISkyDiveState") {
+                // NEW: Update SkyDive toggle from Lua (if activated by keybind/command)
+                document.getElementById('skydiveToggleCheckbox').checked = item.state;
+                sendNuiDebugMessage('log', `[HTML] Updated SkyDive Toggle UI to: ${item.state}`);
             }
         });
 
-        // ===================================
-        // نظام الإشعارات (Notifications)
-        // ===================================
+        // ======================================
+        // HTML Element Event Listeners
+        // ======================================
 
-        function showNotification(title, message, type = "info", duration = 4000) {
-            const notification = document.createElement('div');
-            notification.classList.add('notification');
-            if (type === "success") notification.style.borderColor = "rgba(0, 255, 0, 0.4)";
-            if (type === "error") notification.style.borderColor = "rgba(255, 0, 0, 0.4)";
-            if (type === "info") notification.style.borderColor = "rgba(255, 255, 0, 0.4)";
+        // Tab Click Listeners
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                switchTab(this.dataset.tab);
+            });
+        });
 
-            notification.innerHTML = `
-                <div class="notification-content">
-                    <div class="notification-icon">
-                        ${type === "success" ? '<i class="fa-solid fa-check-circle"></i>' :
-                           type === "error" ? '<i class="fa-solid fa-times-circle"></i>' :
-                           '<i class="fa-solid fa-info-circle"></i>'}
-                    </div>
-                    <div class="notification-text">
-                        <div class="notification-title">${title}</div>
-                        <div class="notification-message">${message}</div>
-                    </div>
-                </div>
-                <div class="notification-timer"></div>
-            `;
+        // Menu Item Click Listeners (for general items and existing toggles)
+        // Note: For new custom elements like skydive, we use specific listeners below
+        menuItems.forEach(item => {
+            // Exclude skydive items from generic click handling if they have specific behavior
+            if (item.classList.contains('skydive-toggle-item') || 
+                item.classList.contains('skydive-speed-slider') || 
+                item.classList.contains('skydive-keybind')) {
+                return; 
+            }
 
-            notificationContainer.appendChild(notification);
+            item.addEventListener('click', function() {
+                selectMenuItem(this);
+                const action = this.dataset.action;
+                if (action) {
+                    const checkbox = this.querySelector('input[type="checkbox"]');
+                    if (checkbox) {
+                        checkbox.checked = !checkbox.checked; // Toggle visually
+                        sendNuiMessage('toggleAction', { action: action, state: checkbox.checked, name: this.querySelector('.menu-item-label').textContent.trim() });
+                        sendNuiDebugMessage('log', `[HTML] Toggle action sent: ${action}, State: ${checkbox.checked}`);
+                    } else {
+                        sendNuiMessage('menuSelected', { action: action, name: this.querySelector('.menu-item-label').textContent.trim() });
+                        sendNuiDebugMessage('log', `[HTML] Menu item selected: ${action}`);
+                    }
+                }
+            });
+        });
 
-            const timerBar = notification.querySelector('.notification-timer');
-            timerBar.style.animationDuration = `${duration / 1000}s`;
-            if (type === "success") timerBar.style.backgroundColor = "rgb(0, 255, 0)";
-            if (type === "error") timerBar.style.backgroundColor = "rgb(255, 0, 0)";
-            if (type === "info") timerBar.style.backgroundColor = "rgb(255, 255, 0)";
+        // Toggle Checkbox Change Listeners (for existing toggles)
+        document.getElementById('fastrun-toggle').addEventListener('change', function() {
+            sendNuiMessage('toggleAction', { action: 'fastrun_toggle', state: this.checked, name: 'Fast Run' });
+            sendNuiDebugMessage('log', `[HTML] Fast Run Toggle: ${this.checked}`);
+            updateLuaCurrentState();
+        });
+        document.getElementById('noclip-toggle').addEventListener('change', function() {
+            sendNuiMessage('toggleAction', { action: 'noclip_toggle', state: this.checked, name: 'Noclip' });
+            sendNuiDebugMessage('log', `[HTML] Noclip Toggle: ${this.checked}`);
+            updateLuaCurrentState();
+        });
+        document.getElementById('godmode-toggle').addEventListener('change', function() {
+            sendNuiMessage('toggleAction', { action: 'godmode_toggle', state: this.checked, name: 'Godmode' });
+            sendNuiDebugMessage('log', `[HTML] Godmode Toggle: ${this.checked}`);
+            updateLuaCurrentState();
+        });
 
-            setTimeout(() => {
-                notification.classList.add('fade-out');
-                notification.addEventListener('animationend', () => {
-                    notification.remove();
-                });
-            }, duration - 250);
+        // ======================================
+        // NEW: SkyDive HTML Control Logic
+        // ======================================
+
+        // SkyDive Toggle Checkbox
+        document.getElementById('skydiveToggleCheckbox').addEventListener('change', function() {
+            const isChecked = this.checked;
+            sendNuiMessage('skydiveToggle', { state: isChecked });
+            sendNuiDebugMessage('log', `[HTML] SkyDive Toggle changed to: ${isChecked}`);
+            updateLuaCurrentState();
+        });
+
+        // SkyDive Speed Slider
+        let skydiveSpeedSlider = document.getElementById('skydiveSpeedSlider');
+        let skydiveSpeedValueDisplay = document.getElementById('skydiveSpeedValue');
+
+        // Update display value as slider moves
+        skydiveSpeedSlider.addEventListener('input', function() {
+            skydiveSpeedValueDisplay.textContent = this.value;
+            // You can send real-time updates here if needed, but 'change' is usually enough
+            // sendNuiDebugMessage('log', `[HTML] SkyDive Speed slider input: ${this.value}`);
+        });
+
+        // Send value to Lua when slider is released (or value changes after input)
+        skydiveSpeedSlider.addEventListener('change', function() {
+            const speedValue = parseFloat(this.value);
+            sendNuiMessage('skydiveSpeedUpdate', { value: speedValue });
+            sendNuiDebugMessage('log', `[HTML] SkyDive Speed changed to: ${speedValue}`);
+            updateLuaCurrentState();
+        });
+
+        // SkyDive Keybind Logic
+        let skydiveKeyDisplay = document.getElementById('skydiveKeyDisplay');
+        let isBindingKey = false; // Flag to indicate if we're waiting for a key press
+        let currentSkydiveKey = 0; // Store the current key code in JS
+
+        // Helper to convert FiveM key codes (like those from IsControlJustPressed) to readable names
+        // NOTE: This map is incomplete and simplified. For a full map, you'd need a much larger object
+        // or a server-side lookup if you handle keyboard input differently.
+        // FiveM control codes (0-255) are specific. JS event.keyCode are standard.
+        // We are sending JS keyCode directly to Lua and relying on Lua's GetControlName.
+        function FiveMKeyToName(keyCode) {
+            // Common keyboard key codes (JS keyCode values)
+            const jsKeyMap = {
+                8: "Backspace", 9: "Tab", 13: "Enter", 16: "Shift", 17: "Ctrl", 18: "Alt", 27: "Escape", 32: "Space",
+                37: "ArrowLeft", 38: "ArrowUp", 39: "ArrowRight", 40: "ArrowDown",
+                48: "0", 49: "1", 50: "2", 51: "3", 52: "4", 53: "5", 54: "6", 55: "7", 56: "8", 57: "9",
+                65: "A", 66: "B", 67: "C", 68: "D", 69: "E", 70: "F", 71: "G", 72: "H", 73: "I", 74: "J",
+                75: "K", 76: "L", 77: "M", 78: "N", 79: "O", 80: "P", 81: "Q", 82: "R", 83: "S", 84: "T",
+                85: "U", 86: "V", 87: "W", 88: "X", 89: "Y", 90: "Z",
+                112: "F1", 113: "F2", 114: "F3", 115: "F4", 116: "F5", 117: "F6", 118: "F7", 119: "F8",
+                120: "F9", 121: "F10", 122: "F11", 123: "F12"
+                // Add more as needed
+            };
+            return jsKeyMap[keyCode] || `Key ${keyCode}`; // Fallback to "Key [code]"
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log("[HTML] DOMContentLoaded. Initializing menu.");
-            renderMenu(currentMenuType);
-            updateLuaCurrentState(); // Initial state update
+        // Event listener for clicking the keybind display
+        skydiveKeyDisplay.addEventListener('click', function() {
+            if (!isBindingKey) {
+                isBindingKey = true;
+                this.textContent = 'Press a key...';
+                this.classList.add('keybind-input-active');
+                sendNuiDebugMessage('log', `[HTML] Waiting for SkyDive keybind input...`);
+
+                // Set a timeout to cancel if no key is pressed
+                setTimeout(() => {
+                    if (isBindingKey) {
+                        isBindingKey = false;
+                        this.textContent = currentSkydiveKey !== 0 ? FiveMKeyToName(currentSkydiveKey) : "None";
+                        this.classList.remove('keybind-input-active');
+                        sendNuiDebugMessage('warn', `[HTML] SkyDive keybind selection timed out.`);
+                    }
+                }, 5000); // 5 seconds timeout
+            }
+        });
+
+        // Global keydown listener to capture the pressed key for keybind
+        document.addEventListener('keydown', function(event) {
+            if (isBindingKey) {
+                event.preventDefault(); // Prevent default browser action (e.g., scrolling with spacebar)
+                isBindingKey = false;
+                
+                const newKey = event.keyCode; // This is the standard JS key code
+                currentSkydiveKey = newKey; // Update JS variable
+                skydiveKeyDisplay.textContent = FiveMKeyToName(newKey); // Update display
+                skydiveKeyDisplay.classList.remove('keybind-input-active');
+
+                sendNuiMessage('skydiveKeybindUpdate', { key: newKey }); // Send JS key code to Lua
+                sendNuiDebugMessage('log', `[HTML] SkyDive Keybind set to: ${newKey} (${FiveMKeyToName(newKey)})`);
+                updateLuaCurrentState();
+            }
+        });
+
+        // Initialize first item selection and tab
+        switchTab(currentActiveTab); // Ensure the default tab is shown and selected
+
+        // Initial fetch call to Lua to signify HTML is loaded and ready for initial states
+        // This is important for Lua to send the current state of features when the menu opens
+        window.addEventListener('DOMContentLoaded', () => {
+            sendNuiDebugMessage('log', '[HTML] DOMContentLoaded. Ready for NUI messages.');
+            // Send a ready signal to Lua to request initial state if menu is to be opened directly
+            // sendNuiMessage('htmlReady', {}); // You could add this if Lua needs a specific signal to send initial data
         });
     </script>
 </body>
