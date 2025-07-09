@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        .loading-wrapper {
+            position: fixed;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 320px;
+            padding: 12px;
+        }
+        
+        .loading-text {
+            font-size: 12px;
+            font-weight: 400;
+            color: #e0e0e0;
+            margin-bottom: 8px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(0, 0, 0, 0.75);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #fffb00;
+            width: 0%;
+            transition: width 0.3s ease-out;
+            box-shadow: 0 0 6px #fbff00, 0 0 10px rgba(255, 217, 0, 0.4);
+        }
+
+        .progress-percentage {
+            font-size: 11px;
+            font-weight: 500;
+            color: #d0d0d0;
+            margin-top: 6px;
+        }
+
+        .tip-container {
+            position: fixed;
+            bottom: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .tip-text {
+            font-size: 11px;
+            font-weight: 400;
+            color: #b0b0b0;
+        }
+        
+        .fade-out {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-wrapper" id="loadingWrapper">
+        <div class="loading-text" id="loadingText">Waiting for font to load...</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="progress-percentage" id="progressPercentage">0%</div>
+    </div>
+    
+    <div class="tip-container" id="tipContainer">
+        <div class="tip-text">Did you know that - im the best~!</div>
+    </div>
+
+    <script>
+        function updateProgress(progress, status) {
+            progress = Math.max(0, Math.min(100, progress));
+            
+            const progressBar = document.getElementById('progressBar');
+            const progressPercentage = document.getElementById('progressPercentage');
+            const loadingText = document.getElementById('loadingText');
+            
+            if (progressBar) progressBar.style.width = progress + '%';
+            if (progressPercentage) progressPercentage.textContent = Math.round(progress) + '%';
+            if (loadingText && status) loadingText.textContent = status;
+        }
+        
+        function hideLoading() {
+            document.body.classList.add('fade-out');
+            setTimeout(() => {
+                document.body.style.display = 'none';
+            }, 500);
+        }
+        
+        function resetLoading() {
+            document.body.classList.remove('fade-out');
+            document.body.style.display = 'flex';
+            updateProgress(0, 'Waiting for font to load...');
+        }
+        
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            switch(data.type) {
+                case 'updateProgress':
+                    updateProgress(data.progress, data.status);
+                    break;
+                case 'hideLoading':
+                    hideLoading();
+                    break;
+                case 'reset':
+                    resetLoading();
+                break;
+            }
+        });
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            updateProgress(0, 'Waiting for font to load...');
+        });
+    </script>
+</body>
+</html>
